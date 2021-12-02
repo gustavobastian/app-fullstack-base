@@ -35,14 +35,24 @@ app.get('/devices/', function(req, res, next) {
     res.send(devices).status(200);
 });
 
-//can use map, filter and reduce
-//let datosfiltrados=datos.filter(item => item.id==req.params.id);
+//
+//
 app.get('/devices/:id', function(req, res) {
     idAb=req.params.id;    
     let datos=require('./datos.json');
     let datosfiltrados=datos.filter(item => item.id==req.params.id);
     res.send(datosfiltrados).status(200);
 });
+
+//Post method for erasing devices 
+
+app.post('/devices/:id', function(req, res, next) {
+    console.log("estoy aqui");
+    console.log(req.params.id);
+    res.send("Item deleted").status(200);
+});
+
+//
 app.listen(PORT, function(req, res) {
     
     console.log("NodeJS API running correctly");

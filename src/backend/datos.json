@@ -4,6 +4,7 @@
     { "id": 3,"name": "Velador","description": "Velador Living","state": 1,"type": 0}, 
     { "id": 4,"name": "Persiana 1","description": "Persiana Living","state": 1,"type": 1},
     { "id": 5,"name": "Persiana 2","description": "Persiana Cocina","state": 0,"type": 1},
-    { "id": 5,"name": "Persiana 3","description": "Persiana Balcon","state": 1,"type": 1},
-    { "id": 2,"name": "Lampara 3","description": "Luz Balcon","state": 1,"type": 0}
+    { "id": 6,"name": "Persiana 3","description": "Persiana Balcon","state": 1,"type": 1},
+    { "id": 7,"name": "Lampara 3","description": "Luz Balcon","state": 1,"type": 0},
+    { "id": 8,"name": "Ventilador","description": "Techo pieza","state": 50,"type": 2}
 ]

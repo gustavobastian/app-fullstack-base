@@ -27,18 +27,35 @@ class Main implements EventListenerObject,GetResponseListener{
            this.statusForm="inForm";
            this.callForm();     
         }
+        //if we cancelled the new device request we use the continue button
         else if((ev.target.innerText=="Continue")&&this.statusForm=="inForm")
         {
            this.statusForm="waiting";
            this.hideForm();     
+        }        
+        //delete buttons inside any device
+        else if((ev.target.innerText=="Delete"))
+        {
+          //ask for confirmation
+          if (confirm('Are you sure you want to delete this device?')) {           
+            this.deleteDevice(ev.target.id);           
+          }           
         }
         else {
-            console.log(ev.target.id);       
-           
+            console.log(ev.target.id);     
         }
 
 
         }
+    }
+
+    public deleteDevice(object:string){
+      console.log(object);
+      let deviceNumber=object.split("_");
+      this.framework.requestDEL("http://localhost:8000/devices/"+deviceNumber[1],this,deviceNumber[1]);                   
+      //window.alert(deviceNumber[1]);
+      //console.log(object);
+
     }
 
     public getElement(object:string):HTMLElement {        
@@ -75,6 +92,17 @@ class Main implements EventListenerObject,GetResponseListener{
                    </label>
                  </p>
                  </div>
+
+                 <div class="input-field col s6 m6 l6">                 
+                  <input placeholder="Device_Name" id="Device_Name" type="text" class="validate">
+                   <label for="Device_Name">Device Name</label>
+                 </div>
+
+                 <div class="input-field col s6 m6 l6">                                  
+                  <input placeholder="Device_Description" id="Device_Description" type="text" class="validate">
+                  <label for="Device_Description">Device Description</label>
+                 </div>
+
                  <button id="Continue_button" >Continue</button>
 
         `;
@@ -91,14 +119,21 @@ class Main implements EventListenerObject,GetResponseListener{
         
         containerForm.innerHTML+= ``;
     }
+    
+    handlerDeleteDevice(status:number, response:string,id:string){
+        if(response=='ok'){console.log("object deleted")}
+        else {window.alert("object couldn`t be deleted")}
+    }
 
     handlerGetResponse(status:number, response:string){
+        console.log(status);
+        if(response=="Item deleted"){console.log("deleted"); return;}
         let respuestaObjetos:Array<Device> = JSON.parse(response);        
         let container=this.getElement("lista");
         //drawing devices on screen
          for(let disp of respuestaObjetos)
          {  
-            let content=  `<div class="col s12 m6 l5"> <div `
+            let content=  `<div class="col s12 m6 l5" >   `
              //container.innerHTML+= `<li class="collection-item avatar">`
              content+= `<div class="card blue darken-1">
                                     <div class="card-content white-text">
@@ -139,6 +174,27 @@ class Main implements EventListenerObject,GetResponseListener{
                             </div>  
                     
                     `;}    
+              else if(disp.type==2){
+                      content+= `<i class=" material-icons">ac_unit</i>
+                                  <br>
+                                          
+                                  <p>${disp.description}</p>
+                             
+                                  <div class="switch">
+                                  <label class="white-text">
+                                      On
+                                      <input type="checkbox" id="ck_${disp.id}">
+                                      <span class="lever"></span>
+                                      Off
+                                  </label>
+                                  <form action="#">
+                                  <label class="white-text">speed</label>
+                                  <p class="range-field">
+                                    <input type="range" id="Speed" min="0" max="100" oninput="showVal(this.value)" onchange="showVal(this.value)" />
+                                  </p>
+                                </form>
+                      
+                      `;}          
              else{content+= `<i class=" material-icons">ac_unit</i>
                                 <br>                                               
                                 <p>${disp.description}</p>
@@ -157,8 +213,9 @@ class Main implements EventListenerObject,GetResponseListener{
             
             content+= `<button class="mybutton" id="edit_${disp.id}"index.html">Edit</button>`;
             content+= `<button class="mybutton" id="delete_${disp.id}">Delete</button>`;
+            content+= `<div id="editW_${disp.id}"></div>`;
             container.innerHTML+=    content;             
-             }
+            }
              container.innerHTML+= `  </div>`;
            
            //adding listener for objects  

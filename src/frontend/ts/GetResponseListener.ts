@@ -1,3 +1,3 @@
 interface GetResponseListener{
-    handlerGetResponse(status:number, response:string);    
+    handlerGetResponse(status:number, response:string);        
 }
