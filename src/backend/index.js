@@ -14,7 +14,7 @@ app.use(express.static('/home/node/app/static/'));
 //=======[ Main module code ]==================================================
 
 app.get('/devices/', function(req, res, next) {
-    devices = [
+   /* devices = [
         { 
             'id': 1, 
             'name': 'Lampara 1', 
@@ -30,10 +30,21 @@ app.get('/devices/', function(req, res, next) {
             'type': 2, 
         },
     ]
-    res.send(JSON.stringify(devices)).status(200);
+    res.send(JSON.stringify(devices)).status(200);*/
+    let devices=require('./datos.json');
+    res.send(devices).status(200);
 });
 
+//can use map, filter and reduce
+//let datosfiltrados=datos.filter(item => item.id==req.params.id);
+app.get('/devices/:id', function(req, res) {
+    idAb=req.params.id;    
+    let datos=require('./datos.json');
+    let datosfiltrados=datos.filter(item => item.id==req.params.id);
+    res.send(datosfiltrados).status(200);
+});
 app.listen(PORT, function(req, res) {
+    
     console.log("NodeJS API running correctly");
 });
 
