@@ -27,10 +27,17 @@ class Main implements EventListenerObject,GetResponseListener{
            this.statusForm="inForm";
            this.callForm();     
         }
-        //if we cancelled the new device request we use the continue button
-        else if((ev.target.innerText=="Continue")&&this.statusForm=="inForm")
+        //if we cancelled the new device request we use the cancel button
+        else if((ev.target.innerText=="Cancel")&&this.statusForm=="inForm")
         {
            this.statusForm="waiting";
+           this.hideForm();     
+        } 
+        //if we complete the form and want to publish the new device on the database
+        else if((ev.target.innerText=="Send")&&this.statusForm=="inForm")
+        {
+           this.statusForm="waiting";
+           this.sendDevice();
            this.hideForm();     
         }        
         //delete buttons inside any device
@@ -58,6 +65,28 @@ class Main implements EventListenerObject,GetResponseListener{
 
     }
 
+
+    public sendDevice(){
+
+      let deviceLocal= new Device();
+      let deviceNameLocal= this.getElement("Device_Name");
+      let deviceTypeLocal= this.getElement("Device_Type");
+      let deviceDescriptionLocal= this.getElement("Device_Description");
+
+      deviceLocal.name=deviceNameLocal.innerText;
+      deviceLocal.type=parseInt(deviceTypeLocal.innerText);
+      deviceLocal.description=deviceDescriptionLocal.innerText;
+      if((deviceLocal.type<0)||(deviceLocal.type>3))
+        {window.alert("error in the type of the device!");return;}
+        
+      //window.alert(deviceNumber[1]);
+      console.log("sending");
+     // console.log(deviceLocal);
+     let result="dd";
+     this.framework.requestDEL("http://localhost:8000/devices/2",this,result);                   
+      return;
+    }
+
     public getElement(object:string):HTMLElement {        
         return document.getElementById(object);
     }
@@ -67,35 +96,20 @@ class Main implements EventListenerObject,GetResponseListener{
       //recovering from DOM the place where we put form  
       let containerForm=this.getElement("deviceForm");
 
-      let content=  `<form>
+      let content=  `<form id="LocalForm">                   
+                  <br>  
+                  <h>Device Type:</h>
+                  <br>
+                  <p>1:light 2:window 3:fan or air conditioner</p>
                    
-                   <br>  
-                   <h>Device Type:</h>
-                   <br>
-                   <div> 
-                   <p>
-                   <label>
-                     <input name="group1" type="radio" checked />
-                     <span>Lámpara</span>
-                   </label>
-                 </p>
-                 <p>
-                   <label>
-                     <input name="group1" type="radio" />
-                     <span>Ventana</span>
-                   </label>
-                 </p>
-                 <p>
-                   <label>
-                     <input class="with-gap" name="group1" type="radio"  />
-                     <span>Aire Acondicionado</span>
-                   </label>
-                 </p>
-                 </div>
-
+                  <div class="input-field col s6 m6 l6">                 
+                  <input placeholder="Device_Type" id="Device_Type" type="text" class="validate">
+                  <label for="Device_Type">Device Type</label>
+                  </div>
+                
                  <div class="input-field col s6 m6 l6">                 
                   <input placeholder="Device_Name" id="Device_Name" type="text" class="validate">
-                   <label for="Device_Name">Device Name</label>
+                  <label for="Device_Name">Device Name</label>
                  </div>
 
                  <div class="input-field col s6 m6 l6">                                  
@@ -103,19 +117,23 @@ class Main implements EventListenerObject,GetResponseListener{
                   <label for="Device_Description">Device Description</label>
                  </div>
 
-                 <button id="Continue_button" >Continue</button>
+                 <button id="Cancel_button" class="btn waves-effect waves-light button-view" >Cancel</button>
+                 <button id="Send_button" class="btn waves-effect waves-light button-view" >Send</button>
+                 
 
         `;
 //onclick="index.html"
       containerForm.innerHTML+=content;
       containerForm.innerHTML+= `  </form> `;              
-      let continueButton=this.getElement("Continue_button");
-      continueButton.addEventListener("click",this);
+      let CancelButton=this.getElement("Cancel_button");
+      let SendButton=this.getElement("Send_button");
+      CancelButton.addEventListener("click",this);
+      SendButton.addEventListener("click",this);
 
     }
     public hideForm():void{
-        console.log("Hiding form");
-     //   let containerForm=this.getElement("deviceForm");
+      //  console.log("Hiding form");
+        let containerForm=this.getElement("deviceForm");
         
         containerForm.innerHTML+= ``;
     }
@@ -175,6 +193,8 @@ class Main implements EventListenerObject,GetResponseListener{
                     
                     `;}    
               else if(disp.type==2){
+              //type 2 => Air Conditioner or fan , with switch for opening/close the window and level for increase
+              //decrease temp or speed     
                       content+= `<i class=" material-icons">ac_unit</i>
                                   <br>
                                           
