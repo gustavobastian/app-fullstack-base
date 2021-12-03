@@ -18,7 +18,7 @@ class Framework{
     }
 
     public requestDEL(url:string, listener:GetResponseListener,data:string){
-        ///AJAX api rest GET
+        ///AJAX api rest DEL
         let xml = new XMLHttpRequest();
 
         //asynchronous request method
