@@ -28,7 +28,8 @@ class Main implements EventListenerObject,GetResponseListener{
         if((ev.target.innerText=="add")&&this.statusForm=="waiting")
         {
            this.statusForm="inForm";
-           this.callForm();     
+           this.callForm(); 
+               
         }
         //if we cancelled the new device request we use the cancel button
         else if((ev.target.innerText=="CANCEL")&&((this.statusForm=="inForm")||(this.statusForm=="inEdit")))
@@ -174,7 +175,7 @@ class Main implements EventListenerObject,GetResponseListener{
       let SendButton=this.getElement("Send_button");
       CancelButton.addEventListener("click",this);
       SendButton.addEventListener("click",this);
-
+      window.scrollTo(0, 0); ///move to the form
     }
     //
     public hideForm():void{
@@ -264,9 +265,9 @@ class Main implements EventListenerObject,GetResponseListener{
                                       Off
                                   </label>
                                   <form action="#">
-                                  <label class="white-text">speed</label>
+                                  <label class="white-text">Speed/Level</label>
                                   <p class="range-field">
-                                    <input type="range" id="Speed" min="0" max="100" oninput="showVal(this.value)" onchange="showVal(this.value)" />
+                                    <input type="range" id="Speed_${disp.id}" min="0" max="100" oninput="showVal(this.value)" onchange="showVal(this.value)" value=0 />
                                   </p>
                                 </form>
                       
