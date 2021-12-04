@@ -11,6 +11,9 @@ var utils   = require('./mysql-connector');
 app.use(express.json()); 
 // to serve static files
 app.use(express.static('/home/node/app/static/'));
+// to parse received data
+var bodyParser = require('body-parser')
+
 
 //=======[ Main module code ]==================================================
 
@@ -40,7 +43,7 @@ app.get('/devices/', function(req, res, next) {
 
     //response with Devices from the database
     connection.query('SELECT *  FROM Devices ', function(error,result, fields){
-        console.log(result);    
+     //   console.log(result);    
         res.send(result).status(200);
         return;    
     })
@@ -69,18 +72,75 @@ app.get('/devices/:id', function(req, res) {
 
 //Post method for deleting devices 
 
-app.post('/devices/:id', function(req, res, next) {
-    console.log("estoy aqui");
-    console.log(req.params.id);
+app.delete('/devices/:id', function(req, res, next) {
+    console.log("deleting "+req.params.id);
+ //   console.log(req.params.id);
     res.send("Item deleted").status(200);
 
     //check database
-    connection.query('SELECT *  FROM Devices WHERE id ='+req.params.id, function(error,result, fields){
-        console.log(result);        
+    connection.query('Delete FROM Devices WHERE id ='+req.params.id, function(error,result, fields){
+   //     console.log(result);        
     })
 
 });
 
+//Post method for adding a new device 
+
+app.post('/devices/', function(req, res, next) {
+        
+    let received=req.body;
+    //sentences for debug
+    /*console.log("name: "+received.name);
+    console.log("type: "+received.type);
+    console.log("description: "+received.description);*/
+
+    //converting received data into string for use them in the sql sentence
+    deviceName=JSON.stringify(received.name);
+    deviceType=JSON.stringify(received.type);
+    deviceDescription=JSON.stringify(received.description);
+    
+    //preparing sql sentence for insertion, by default all devices are set with status 0 at insertion
+    let sql = `INSERT INTO Devices (name, type, description,state) VALUES (${deviceName},${deviceType},${deviceDescription}, '0')`;
+    
+    //inserting device to database
+    connection.query(sql, function(error,result){
+        if (error) throw error;
+        console.log("Number of records inserted: " + result.affectedRows);
+    })       
+    //send response to frontend
+    res.send("Item add").status(200);
+    res.end();
+});
+
+//Post method for updating a device 
+
+app.post('/devices/:id', function(req, res, next) {
+        
+    let received=req.body;
+    //sentences for debug
+    /*console.log("name: "+received.name);
+    console.log("type: "+received.type);
+    console.log("description: "+received.description);*/
+
+    //converting received data into string for use them in the sql sentence
+    deviceName=JSON.stringify(received.name);
+    deviceType=JSON.stringify(received.type);
+    deviceDescription=JSON.stringify(received.description);
+    deviceID=JSON.stringify(req.params.id);
+    
+    
+    //preparing sql sentence for insertion, by default all devices are set with status 0 at insertion
+    let sql = `UPDATE Devices SET name=${deviceName},type=${deviceType}, Description=${deviceDescription} WHERE id=${deviceID}`;
+    
+    //inserting device to database
+    connection.query(sql, function(error,result){
+        if (error) throw error;
+        console.log("Number of records updated: " + result.affectedRows);
+    })       
+    //send response to frontend
+    res.send("Item Updated").status(200);
+    res.end();
+});
 //
 app.listen(PORT, function(req, res) {
     

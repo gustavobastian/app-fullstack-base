@@ -1,14 +1,18 @@
 var M;
 /** class Main
- * 
+ * components: 
+ * name
+ * statusForm: three states {wainting, inForm or inEdit}
  */
 class Main implements EventListenerObject,GetResponseListener{
     private nombre:string;
     private statusForm:string;
+    private deviceNumber:number;
     private framework:Framework = new Framework();
     constructor(nombre:string){
         this.nombre=nombre;
         this.statusForm="waiting";
+        this.deviceNumber=0;
         this.framework.requestGET("http://localhost:8000/devices",this);                   
         
     }
@@ -17,9 +21,8 @@ class Main implements EventListenerObject,GetResponseListener{
         
         //for buttons
         if(ev.type == "click"){            
-           console.log(ev.target.innerText);    
+           console.log(ev.target.innerText);   
             
-
 
         //if the event is called from the add button, we call the complete form function
         if((ev.target.innerText=="add")&&this.statusForm=="waiting")
@@ -28,19 +31,25 @@ class Main implements EventListenerObject,GetResponseListener{
            this.callForm();     
         }
         //if we cancelled the new device request we use the cancel button
-        else if((ev.target.innerText=="Cancel")&&this.statusForm=="inForm")
+        else if((ev.target.innerText=="CANCEL")&&((this.statusForm=="inForm")||(this.statusForm=="inEdit")))
         {
            this.statusForm="waiting";
            this.hideForm();     
         } 
         //if we complete the form and want to publish the new device on the database
-        else if((ev.target.innerText=="Send")&&this.statusForm=="inForm")
+        else if((ev.target.innerText=="SEND")&&this.statusForm=="inForm")
         {
            this.statusForm="waiting";
-           this.sendDevice();
-           this.hideForm();     
+           console.log("sending")
+           this.sendDevice();           
+        } 
+        else if((ev.target.innerText=="SEND")&&this.statusForm=="inEdit")
+        {
+           this.statusForm="waiting";
+           console.log("sending")
+           this.sendEditedDevice(this.deviceNumber);           
         }        
-        //delete buttons inside any device
+        //delete device
         else if((ev.target.innerText=="Delete"))
         {
           //ask for confirmation
@@ -48,13 +57,19 @@ class Main implements EventListenerObject,GetResponseListener{
             this.deleteDevice(ev.target.id);           
           }           
         }
+        else if((ev.target.innerText=="Edit")&&this.statusForm=="waiting")
+        {
+          
+          this.editDevice(ev.target.id); 
+          this.callForm(this.deviceNumber);               
+                     
+        }
         else {
             console.log(ev.target.id);     
         }
-
-
         }
     }
+
 
     public deleteDevice(object:string){
       console.log(object);
@@ -64,26 +79,56 @@ class Main implements EventListenerObject,GetResponseListener{
       //console.log(object);
 
     }
+    public editDevice(object:string){
+      console.log(object);
+      let deviceNumberLocal=object.split("_");
+      this.deviceNumber=parseInt(deviceNumberLocal[1]);
+      console.log("number: "+this.deviceNumber);
+      this.statusForm="inEdit";
+      
+      //this.framework.requestDEL("http://localhost:8000/devices/"+deviceNumber[1],this,deviceNumber[1]);                   
+      //window.alert(deviceNumber[1]);
+      //console.log(object);
 
+    }
 
+    //function for sending a new device
     public sendDevice(){
 
-      let deviceLocal= new Device();
-      let deviceNameLocal= this.getElement("Device_Name");
+      
+      let deviceNameLocal= this.getElement("Device_Name");     
       let deviceTypeLocal= this.getElement("Device_Type");
       let deviceDescriptionLocal= this.getElement("Device_Description");
 
-      deviceLocal.name=deviceNameLocal.innerText;
-      deviceLocal.type=parseInt(deviceTypeLocal.innerText);
-      deviceLocal.description=deviceDescriptionLocal.innerText;
-      if((deviceLocal.type<0)||(deviceLocal.type>3))
-        {window.alert("error in the type of the device!");return;}
+      
+      if((deviceTypeLocal.value<0)||(deviceTypeLocal.value>3))
+        {window.alert("error in the type of the device!");return;}      
         
-      //window.alert(deviceNumber[1]);
-      console.log("sending");
-     // console.log(deviceLocal);
-     let result="dd";
-     this.framework.requestDEL("http://localhost:8000/devices/2",this,result);                   
+     
+       
+      let deviceLocal= {"name":deviceNameLocal.value,"type":deviceTypeLocal.value,"description":deviceDescriptionLocal.value};  
+      
+      let data=JSON.stringify(deviceLocal);
+      //console.log(data2);
+
+      this.framework.requestPOSTN("http://localhost:8000/devices/",this,data);                   
+      return;
+    }
+    
+    public sendEditedDevice(id:number){
+      let deviceNameLocal= this.getElement("Device_Name");     
+      let deviceTypeLocal= this.getElement("Device_Type");
+      let deviceDescriptionLocal= this.getElement("Device_Description");
+    
+      if((deviceTypeLocal.value<0)||(deviceTypeLocal.value>3))
+        {window.alert("error in the type of the device!");return;}      
+       
+      let deviceLocal= {"name":deviceNameLocal.value,"type":deviceTypeLocal.value,"description":deviceDescriptionLocal.value};  
+      
+      let data=JSON.stringify(deviceLocal);
+      //console.log(data2);
+
+      this.framework.requestPOSTN("http://localhost:8000/devices/"+id,this,data);                   
       return;
     }
 
@@ -91,7 +136,7 @@ class Main implements EventListenerObject,GetResponseListener{
         return document.getElementById(object);
     }
     //function that calls the form for including a new device on the panel
-    public callForm():void{        
+    public callForm(num:number):void{        
       console.log("creating form");
       //recovering from DOM the place where we put form  
       let containerForm=this.getElement("deviceForm");
@@ -100,7 +145,7 @@ class Main implements EventListenerObject,GetResponseListener{
                   <br>  
                   <h>Device Type:</h>
                   <br>
-                  <p>1:light 2:window 3:fan or air conditioner</p>
+                  <p>0:light 1:window 2:fan or air conditioner</p>
                    
                   <div class="input-field col s6 m6 l6">                 
                   <input placeholder="Device_Type" id="Device_Type" type="text" class="validate">
@@ -117,8 +162,8 @@ class Main implements EventListenerObject,GetResponseListener{
                   <label for="Device_Description">Device Description</label>
                  </div>
 
-                 <button id="Cancel_button" class="btn waves-effect waves-light button-view" >Cancel</button>
-                 <button id="Send_button" class="btn waves-effect waves-light button-view" >Send</button>
+                 <button id="Cancel_button" class="btn waves-effect waves-light button-view" >CANCEL</button>
+                 <button id="Send_button" class="btn waves-effect waves-light button-view" >SEND</button>
                  
 
         `;
@@ -131,6 +176,7 @@ class Main implements EventListenerObject,GetResponseListener{
       SendButton.addEventListener("click",this);
 
     }
+    //
     public hideForm():void{
       //  console.log("Hiding form");
         let containerForm=this.getElement("deviceForm");
@@ -138,14 +184,24 @@ class Main implements EventListenerObject,GetResponseListener{
         containerForm.innerHTML+= ``;
     }
     
-    handlerDeleteDevice(status:number, response:string,id:string){
-        if(response=='ok'){console.log("object deleted")}
-        else {window.alert("object couldn`t be deleted")}
-    }
+    //handler for managing responses from server
 
     handlerGetResponse(status:number, response:string){
         console.log(status);
-        if(response=="Item deleted"){console.log("deleted"); return;}
+        //response object deleted:  refresh the page, print to console 
+        if(response=="Item deleted")
+          {console.log("deleted");
+           window.location.reload(); //page refresh
+           return;}
+        //response object status updated:  print to console
+        if(response=="Status Updated")
+           {console.log("status updated");          
+           return;}   
+
+        //first response object deleted, refresh the page    
+       
+       
+        //response for all list
         let respuestaObjetos:Array<Device> = JSON.parse(response);        
         let container=this.getElement("lista");
         //drawing devices on screen
@@ -158,7 +214,7 @@ class Main implements EventListenerObject,GetResponseListener{
                                     <span class="card-title"> ${disp.name} </span> `
 
         //according to device type, different cards are assigned                                  
-        // type 0 => light, with switch for turn on/off the light
+             // type 0 => light, with switch for turn on/off the light
              if(disp.type==0){
                 content+= `<i class=" material-icons">lightbulb_outline</i>
                                 <br>
@@ -174,7 +230,7 @@ class Main implements EventListenerObject,GetResponseListener{
                                 </div>                           
                             </div>
                             `;}
-        //type 1 => window, with switch for opening/close the window                    
+             //type 1 => window, with switch for opening/close the window                    
              else if(disp.type==1){
                     content+= `<i class=" material-icons">dehaze</i>
                                 <br>
@@ -263,11 +319,7 @@ class Main implements EventListenerObject,GetResponseListener{
 
 window.onload = function(){
     let miObjeto = new Main("Gustavo");
-
-    let boton=miObjeto.getElement("btn");
     let boton_agregar=miObjeto.getElement("add_device");
-   
-    boton.addEventListener("click",miObjeto);//no colocar ()... referencia
     boton_agregar.addEventListener("click",miObjeto);
 
 }

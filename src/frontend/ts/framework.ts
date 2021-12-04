@@ -29,7 +29,24 @@ class Framework{
                 listener.handlerGetResponse(xml.status, xml.response);      
             }                        
         }
-        xml.open("POST", url,true);//true --->asincrona
+        xml.open("DELETE", url,true);//true --->asincrona
         xml.send(data);
    }
+
+   public requestPOSTN(url:string, listener:GetResponseListener,data:string){
+    ///AJAX api rest DEL
+    let xml = new XMLHttpRequest();
+    console.log(data);
+    //asynchronous request method
+    xml.onreadystatechange = function respuestaServidor(){
+        
+        if(xml.readyState == 4)//status 4 all transaction performed
+        {
+            listener.handlerGetResponse(xml.status, xml.response);      
+        }                        
+    }
+    xml.open("POST", url,true);//true --->asincrona
+    xml.setRequestHeader("Content-Type","application/json;charset=UTF-8");
+    xml.send(data);
+}
 }
