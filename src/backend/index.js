@@ -141,6 +141,54 @@ app.post('/devices/:id', function(req, res, next) {
     res.send("Item Updated").status(200);
     res.end();
 });
+
+//Put method for change device state
+app.put('/devices/:id', function(req, res, next) {
+    
+    let value1="1";    
+    deviceID=JSON.stringify(req.params.id);
+    deviceState="0";
+    
+    let result=0;
+    //recover from database current state
+    connection.query(`SELECT state  FROM Devices WHERE id =${deviceID}`, function (error,result){
+        //console.log("previus state: "+JSON.stringify(result[0])); 
+       
+        deviceState= (JSON.stringify(result[0])).split(":");
+        value1=JSON.stringify(deviceState[1]);
+        console.log(value1);
+        let returned=value1.indexOf("1");  
+        if(returned!="-1")
+        {result=0;
+        console.log("cambiando a 0");
+        }
+        else {
+        result=1;
+        console.log("cambiando a 1");
+        } 
+
+
+        let sql = `UPDATE Devices SET state=${result} WHERE id=${deviceID}`;
+        
+        //inserting device to database
+        connection.query(sql, function(error,result){
+            if (error) throw error;
+            console.log("Number of records updated: " + result.affectedRows);
+        });  
+
+
+
+
+    });
+    
+    
+    
+  
+     
+    //send response to frontend
+    res.send("Item status Updated").status(200);
+    res.end();
+});
 //
 app.listen(PORT, function(req, res) {
     

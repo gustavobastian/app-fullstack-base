@@ -18,14 +18,21 @@ class Main implements EventListenerObject,GetResponseListener{
     }
     
     public handleEvent(ev:Event):void{
-        
+
+        let evName=ev.target.id.split("_");
+        //console.log(evName[0]);
+        //console.log(evName[1]);
         //for buttons
         if(ev.type == "click"){            
            console.log(ev.target.innerText);   
             
-
+        if(evName[0]="ck")
+        {
+          this.deviceStateChange(evName[1]);
+          return;
+        }  
         //if the event is called from the add button, we call the complete form function
-        if((ev.target.innerText=="add")&&this.statusForm=="waiting")
+        else if((ev.target.innerText=="add")&&this.statusForm=="waiting")
         {
            this.statusForm="inForm";
            this.callForm(); 
@@ -71,20 +78,39 @@ class Main implements EventListenerObject,GetResponseListener{
         }
     }
 
+    public deviceStateChange(id:number):void {
+      console.log("here 2");
+      let data="random";
+      this.framework.requestPUT("http://localhost:8000/devices/"+id,this,data);         
+      return;
+    }
+
 
     public deleteDevice(object:string){
       console.log(object);
       let deviceNumber=object.split("_");
-      this.framework.requestDEL("http://localhost:8000/devices/"+deviceNumber[1],this,deviceNumber[1]);                   
-      //window.alert(deviceNumber[1]);
-      //console.log(object);
+      this.framework.requestDEL("http://localhost:8000/devices/"+deviceNumber[1],this,deviceNumber[1]);                         
 
     }
+
+        /*
+    *getDeviceInfo:
+    *parameter: 
+    *id: number of device whos information is requested
+    *output: device data
+    */
+    public getDeviceInfo(id:number):Device{
+      let output= new Device();      
+      return output;
+    }
+
     public editDevice(object:string){
       console.log(object);
       let deviceNumberLocal=object.split("_");
       this.deviceNumber=parseInt(deviceNumberLocal[1]);
-      console.log("number: "+this.deviceNumber);
+     // console.log("number: "+this.deviceNumber);
+      //let d=this.getDeviceInfo(this.deviceNumber);
+      //console.log(d.name);
       this.statusForm="inEdit";
       
       //this.framework.requestDEL("http://localhost:8000/devices/"+deviceNumber[1],this,deviceNumber[1]);                   
@@ -195,104 +221,23 @@ class Main implements EventListenerObject,GetResponseListener{
            window.location.reload(); //page refresh
            return;}
         //response object status updated:  print to console
-        if(response=="Status Updated")
-           {console.log("status updated");          
+        if(response=="Item status Updated")
+           {console.log("status updated");
+          // window.location.reload(); //page refresh          
            return;}   
 
-        //first response object deleted, refresh the page    
-       
-       
-        //response for all list
+         
+             
+        //response for a list
         let respuestaObjetos:Array<Device> = JSON.parse(response);        
         let container=this.getElement("lista");
         //drawing devices on screen
          for(let disp of respuestaObjetos)
          {  
-            let content=  `<div class="col s12 m6 l5" >   `
-             //container.innerHTML+= `<li class="collection-item avatar">`
-             content+= `<div class="card blue darken-1">
-                                    <div class="card-content white-text">
-                                    <span class="card-title"> ${disp.name} </span> `
-
-        //according to device type, different cards are assigned                                  
-             // type 0 => light, with switch for turn on/off the light
-             if(disp.type==0){
-                content+= `<i class=" material-icons">lightbulb_outline</i>
-                                <br>
-                                            
-                                <p>${disp.description}</p>                           
-                                <div class="switch">
-                                <label class="white-text">
-                                    Off
-                                    <input type="checkbox" id="ck_${disp.id}">
-                                    <span class="lever"></span>
-                                    On
-                                </label>
-                                </div>                           
-                            </div>
-                            `;}
-             //type 1 => window, with switch for opening/close the window                    
-             else if(disp.type==1){
-                    content+= `<i class=" material-icons">dehaze</i>
-                                <br>
-                                        
-                                <p>${disp.description}</p>
-                           
-                                <div class="switch">
-                                <label class="white-text">
-                                    Cl
-                                    <input type="checkbox" id="ck_${disp.id}">
-                                    <span class="lever"></span>
-                                    Op
-                                </label>
-                                </div>                           
-                            </div>  
-                    
-                    `;}    
-              else if(disp.type==2){
-              //type 2 => Air Conditioner or fan , with switch for opening/close the window and level for increase
-              //decrease temp or speed     
-                      content+= `<i class=" material-icons">ac_unit</i>
-                                  <br>
-                                          
-                                  <p>${disp.description}</p>
-                             
-                                  <div class="switch">
-                                  <label class="white-text">
-                                      On
-                                      <input type="checkbox" id="ck_${disp.id}">
-                                      <span class="lever"></span>
-                                      Off
-                                  </label>
-                                  <form action="#">
-                                  <label class="white-text">Speed/Level</label>
-                                  <p class="range-field">
-                                    <input type="range" id="Speed_${disp.id}" min="0" max="100" oninput="showVal(this.value)" onchange="showVal(this.value)" value=0 />
-                                  </p>
-                                </form>
-                      
-                      `;}          
-             else{content+= `<i class=" material-icons">ac_unit</i>
-                                <br>                                               
-                                <p>${disp.description}</p>
-                                
-                                <div class="switch">
-                                <label class="white text">
-                                    Off
-                                    <input type="checkbox" id="ck_${disp.id}">
-                                    <span class="lever"></span>
-                                    On
-                                </label>
-                                </div>                           
-                            </div>    
-             
-             `;}                                      
-            
-            content+= `<button class="mybutton" id="edit_${disp.id}"index.html">Edit</button>`;
-            content+= `<button class="mybutton" id="delete_${disp.id}">Delete</button>`;
-            content+= `<div id="editW_${disp.id}"></div>`;
-            container.innerHTML+=    content;             
-            }
+          let content=displayDevice(disp);  
+          //console.log(log);
+          container.innerHTML+=    content;   
+         }
              container.innerHTML+= `  </div>`;
            
            //adding listener for objects  
@@ -302,7 +247,10 @@ class Main implements EventListenerObject,GetResponseListener{
                 if(disp.type>=0 && disp.type<3){
                     let checkbox = this.getElement("ck_"+disp.id);                    
                     checkbox.addEventListener("click",this);
-                }   
+                    if(disp.state==1){checkbox.value="on";}
+                    
+                } 
+
                 //edit and delete buttons
                 let edit_button=this.getElement("edit_"+disp.id);
                 edit_button.addEventListener("click",this);
