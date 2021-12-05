@@ -26,13 +26,9 @@ class Main implements EventListenerObject,GetResponseListener{
         if(ev.type == "click"){            
            console.log(ev.target.innerText);   
             
-        if(evName[0]="ck")
-        {
-          this.deviceStateChange(evName[1]);
-          return;
-        }  
+       
         //if the event is called from the add button, we call the complete form function
-        else if((ev.target.innerText=="add")&&this.statusForm=="waiting")
+         if((ev.target.innerText=="add")&&this.statusForm=="waiting")
         {
            this.statusForm="inForm";
            this.callForm(); 
@@ -65,6 +61,7 @@ class Main implements EventListenerObject,GetResponseListener{
             this.deleteDevice(ev.target.id);           
           }           
         }
+        //edit device
         else if((ev.target.innerText=="Edit")&&this.statusForm=="waiting")
         {
           
@@ -72,6 +69,12 @@ class Main implements EventListenerObject,GetResponseListener{
           this.callForm(this.deviceNumber);               
                      
         }
+        //state changes
+        else if(evName[0]="ck")
+        {
+          this.deviceStateChange(evName[1]);
+          return;
+        }  
         else {
             console.log(ev.target.id);     
         }
