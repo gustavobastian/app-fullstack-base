@@ -1,10 +1,19 @@
+/**
+ * class Framework
+ * contains all the REST methods for access the server
+ */
 class Framework{
     
+    /**
+     * Function requestGet
+     * Method that ask for the list of devices of the database
+     * @param url address and port of the server
+     * @param listener the handler of the response
+     */
     public requestGET(url:string, listener:GetResponseListener){
-         ///AJAX api rest GET
+         
          let xml = new XMLHttpRequest();
 
-         //asynchronous request method
          xml.onreadystatechange = function respuestaServidor(){
              
           
@@ -18,7 +27,12 @@ class Framework{
          xml.send();
     }
 
-    
+    /**
+     * function requestGETSingle
+     * Method that ask for a specified device of the database
+     * @param url address and port of the server, it contains the id of the device as a parameter
+     * @param listener method to be called for analyse the response
+     */
     public requestGETSingle(url:string, listener:GetSingleResponseListener){
         ///AJAX api rest GET
         let xml = new XMLHttpRequest();
@@ -37,10 +51,16 @@ class Framework{
         xml.send();
    }
 
-   
+    /**
+     * function requestDEL
+     * Function that orders to the server to remove a device.
+     * @param url address and port of the server, the information of the device id is passed as parameter
+     * @param listener 
+     * @param data 
+     */   
 
     public requestDEL(url:string, listener:DeleteResponseListener,data:string){
-        ///AJAX api rest DEL
+        
         let xml = new XMLHttpRequest();
 
         //asynchronous request method
@@ -54,7 +74,14 @@ class Framework{
         xml.open("DELETE", url,true);//true --->asincrona
         xml.send(data);
    }
-
+   /**
+    * function requestPOST
+    * Function called for inserting or update a device on the database.
+    * @param url address and port of the server. If it has a parameter, the server will update a device with parameter as id, 
+    * if it has no parameter the server will create a new device
+    * @param listener method that handle the response
+    * @param data device data with JSON format
+    */
    public requestPOST(url:string, listener:PostResponseListener,data:string){
         ///AJAX api rest POST NEW
         let xml = new XMLHttpRequest();
@@ -73,7 +100,13 @@ class Framework{
     }
 
 
-
+    /**
+     * Function requestPUT
+     * It is used in order to change the status of the device, the server will check the value in the database and change it.
+     * @param url address and port of the server, id of the device as parameter
+     * @param listener method who handles the response from the server
+     * @param data not used
+     */
     public requestPUT(url:string, listener:PostResponseListener,data:string){
     ///AJAX api rest PUT for state changes
     console.log("sending state changes")
