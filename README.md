@@ -159,7 +159,10 @@ En esta sección podés ver los detalles específicos de funcionamiento del cód
 ### Agregar un dispositivo
 
 Completá los pasos para agregar un dispositivo desde el cliente web.
-
+Presionando el boton "+" se despliega el formulario para incorporar un nuevo dispositivo.
+![Agregar disp](doc/adding-device.png)
+Una vez completados todos los datos se presiona "Send".
+Si se quiere cancelar se presiona "Cancel".
 ### Frontend
 
 Completá todos los detalles sobre cómo armaste el frontend, sus interacciones, etc.

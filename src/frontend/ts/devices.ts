@@ -1,3 +1,11 @@
+/**
+ * class Device 
+ * components:
+ * id: identification number of the device
+ * type: device type:{0:light,1:window,2:air conditioning or fan}
+ * description: device description
+ * state: device state(on of)
+ */
 class Device{   
     public id: number;
     public name: string;
@@ -5,7 +13,13 @@ class Device{
     public state : number;
     public type : number;    
 }
-//generate html structure for each device
+
+/**
+ *Function displayDevice
+ *Generates the HTML structure for dynamically modify the web site
+ * @param disp Device with information
+ * @returns HTML content string
+ */
 function displayDevice(disp:Device):string{
     let content=  `<div class="col s12 m5 l3" >   `
     //container.innerHTML+= `<li class="collection-item avatar">`

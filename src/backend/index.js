@@ -16,7 +16,12 @@ var bodyParser = require('body-parser')
 
 
 //=======[ Main module code ]==================================================
-
+/**
+ * Function that sends to the client the list of all the devices in the database in response to a GET request.
+ *  
+ * @param req: object submit by client
+ * @param res: response object from server.
+ */
 app.get('/devices/', function(req, res, next) {
    //response with Device hardcode here
    /* devices = [
@@ -41,7 +46,7 @@ app.get('/devices/', function(req, res, next) {
     /*let devices=require('./datos.json');
     res.send(devices).status(200);*/
 
-    //response with Devices from the database
+    //Devices from the database
     connection.query('SELECT *  FROM Devices ', function(error,result, fields){
      //   console.log(result);    
         res.send(result).status(200);
@@ -50,7 +55,12 @@ app.get('/devices/', function(req, res, next) {
 });
 
 //
-//
+/**
+ * Function that sends one specific device to the client in response to a request
+ * @param req: request object from client
+ * @param res: Response object from Server
+ * @param :id the id of the device
+ */
 app.get('/devices/:id', function(req, res) {
     idAb=req.params.id;    
     //uncomment next tree lines if you want to use the file storage
@@ -67,8 +77,13 @@ app.get('/devices/:id', function(req, res) {
     })
 });
 
-//Post method for deleting devices 
 
+/**
+ * Function that remove one specific device from the database in response to a delete request
+ * @param :id id of the device
+ * @param req : request object
+ * @param res : response object
+ */
 app.delete('/devices/:id', function(req, res, next) {
     console.log("deleting "+req.params.id);
  //   console.log(req.params.id);
@@ -80,8 +95,11 @@ app.delete('/devices/:id', function(req, res, next) {
     })
 });
 
-//Post method for adding a new device 
-
+/**
+ * Function that insert a new device to the database. Always set state to off.
+ * @param req: request object. Contains information of the device.
+ * @param res: response object. 
+ */
 app.post('/devices/', function(req, res, next) {
         
     let received=req.body;
@@ -109,7 +127,12 @@ app.post('/devices/', function(req, res, next) {
     res.end();
 });
 
-//Post method for updating a device 
+
+/**
+ * Function that update a device in the database. 
+ * @param req object. Object that contains the updated information of the device.
+ * @param res object. Response from server.
+ */
 
 app.post('/devices/:id', function(req, res, next) {
         
@@ -140,6 +163,11 @@ app.post('/devices/:id', function(req, res, next) {
 });
 
 //Put method for change device state
+/**
+ * Function that update the state of a  device in the database. 
+ * @params :id - device id
+ * 
+ */
 app.put('/devices/:id', function(req, res, next) {
     
     let value1="1";    
