@@ -47,7 +47,6 @@ app.get('/devices/', function(req, res, next) {
         res.send(result).status(200);
         return;    
     })
-
 });
 
 //
@@ -66,8 +65,6 @@ app.get('/devices/:id', function(req, res) {
         res.send(result).status(200);
         return;    
     })
-    
-    
 });
 
 //Post method for deleting devices 
@@ -81,7 +78,6 @@ app.delete('/devices/:id', function(req, res, next) {
     connection.query('Delete FROM Devices WHERE id ='+req.params.id, function(error,result, fields){
    //     console.log(result);        
     })
-
 });
 
 //Post method for adding a new device 
@@ -99,9 +95,10 @@ app.post('/devices/', function(req, res, next) {
     deviceType=JSON.stringify(received.type);
     deviceDescription=JSON.stringify(received.description);
     
+    
     //preparing sql sentence for insertion, by default all devices are set with status 0 at insertion
     let sql = `INSERT INTO Devices (name, type, description,state) VALUES (${deviceName},${deviceType},${deviceDescription}, '0')`;
-    
+    //let sql = `INSERT INTO Devices (name, type, description,state) VALUES (?,?,?,'0')`,[name,type,description];
     //inserting device to database
     connection.query(sql, function(error,result){
         if (error) throw error;
@@ -158,6 +155,7 @@ app.put('/devices/:id', function(req, res, next) {
         value1=JSON.stringify(deviceState[1]);
         console.log(value1);
         let returned=value1.indexOf("1");  
+        //change state
         if(returned!="-1")
         {result=0;
         console.log("cambiando a 0");
@@ -174,10 +172,7 @@ app.put('/devices/:id', function(req, res, next) {
         connection.query(sql, function(error,result){
             if (error) throw error;
             console.log("Number of records updated: " + result.affectedRows);
-        });  
-
-
-
+        }); 
 
     });
     

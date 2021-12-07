@@ -4,15 +4,17 @@ var M;
  * name
  * statusForm: three states {wainting, inForm or inEdit}
  */
-class Main implements EventListenerObject,GetResponseListener{
+class Main implements EventListenerObject,PostResponseListener, PutResponseListener,GetSingleResponseListener,GetResponseListener,DeleteResponseListener{
     private nombre:string;
     private statusForm:string;
     private deviceNumber:number;
+    private localDevice:Device;
     private framework:Framework = new Framework();
     constructor(nombre:string){
         this.nombre=nombre;
         this.statusForm="waiting";
         this.deviceNumber=0;
+        this.localDevice = new Device();
         this.framework.requestGET("http://localhost:8000/devices",this);                   
         
     }
@@ -31,7 +33,7 @@ class Main implements EventListenerObject,GetResponseListener{
          if((ev.target.innerText=="add")&&this.statusForm=="waiting")
         {
            this.statusForm="inForm";
-           this.callForm(); 
+           this.callForm(0); 
                
         }
         //if we cancelled the new device request we use the cancel button
@@ -70,7 +72,7 @@ class Main implements EventListenerObject,GetResponseListener{
                      
         }
         //state changes
-        else if(evName[0]="ck")
+        else if((evName[0]="ck")&&(this.statusForm=="waiting"))
         {
           this.deviceStateChange(evName[1]);
           return;
@@ -113,10 +115,10 @@ class Main implements EventListenerObject,GetResponseListener{
       this.deviceNumber=parseInt(deviceNumberLocal[1]);
      // console.log("number: "+this.deviceNumber);
       //let d=this.getDeviceInfo(this.deviceNumber);
-      //console.log(d.name);
+      console.log(this.deviceNumber);
       this.statusForm="inEdit";
       
-      //this.framework.requestDEL("http://localhost:8000/devices/"+deviceNumber[1],this,deviceNumber[1]);                   
+      this.framework.requestGETSingle("http://localhost:8000/devices/"+this.deviceNumber,this);                   
       //window.alert(deviceNumber[1]);
       //console.log(object);
 
@@ -124,7 +126,6 @@ class Main implements EventListenerObject,GetResponseListener{
 
     //function for sending a new device
     public sendDevice(){
-
       
       let deviceNameLocal= this.getElement("Device_Name");     
       let deviceTypeLocal= this.getElement("Device_Type");
@@ -141,7 +142,7 @@ class Main implements EventListenerObject,GetResponseListener{
       let data=JSON.stringify(deviceLocal);
       //console.log(data2);
 
-      this.framework.requestPOSTN("http://localhost:8000/devices/",this,data);                   
+      this.framework.requestPOST("http://localhost:8000/devices/",this,data);                   
       return;
     }
     
@@ -158,7 +159,7 @@ class Main implements EventListenerObject,GetResponseListener{
       let data=JSON.stringify(deviceLocal);
       //console.log(data2);
 
-      this.framework.requestPOSTN("http://localhost:8000/devices/"+id,this,data);                   
+      this.framework.requestPOST("http://localhost:8000/devices/"+id,this,data);                   
       return;
     }
 
@@ -180,8 +181,7 @@ class Main implements EventListenerObject,GetResponseListener{
                   <div class="input-field col s6 m6 l6">                 
                   <input placeholder="Device_Type" id="Device_Type" type="text" class="validate">
                   <label for="Device_Type">Device Type</label>
-                  </div>
-                
+                  </div>                
                  <div class="input-field col s6 m6 l6">                 
                   <input placeholder="Device_Name" id="Device_Name" type="text" class="validate">
                   <label for="Device_Name">Device Name</label>
@@ -199,7 +199,8 @@ class Main implements EventListenerObject,GetResponseListener{
         `;
 //onclick="index.html"
       containerForm.innerHTML+=content;
-      containerForm.innerHTML+= `  </form> `;              
+      containerForm.innerHTML+= `  </form> `;
+      
       let CancelButton=this.getElement("Cancel_button");
       let SendButton=this.getElement("Send_button");
       CancelButton.addEventListener("click",this);
@@ -213,24 +214,51 @@ class Main implements EventListenerObject,GetResponseListener{
         
         containerForm.innerHTML+= ``;
     }
+    handlerPostResponse(status:number, response:string){
+        console.log(status);
+        
+        //response object Item Add:  print to console
+        if(response=="Item add")
+        {console.log("Item added");
+        // window.location.reload(); //page refresh          
+        return;}      
+          
+
+    }
+
+    //response object device updated:  print to console
+    handlerPutResponse(status:number, response:string){
+      console.log(status);      
+      //response object status updated:  print to console
+      if(response=="Item status Updated")
+         {console.log("status updated");
+        // window.location.reload(); //page refresh          
+         return;}   
+    } 
+
+    handlerDeleteResponse(status:number, response:string){
+      console.log(status);
+      //response object deleted:  refresh the page, print to console 
+      if(response=="Item deleted")
+        {console.log("deleted");
+         window.location.reload(); //page refresh
+        return;}
+  }
     
-    //handler for managing responses from server
+  handlerGetSingleResponse(status:number, response:string){
+    console.log(status);      
+       
+    let respuestaObjeto= JSON.parse(response);     
+    console.log(respuestaObjeto[0]);
+    this.localDevice.name=respuestaObjeto[0].name;
+    this.localDevice.type=respuestaObjeto[0].type;
+    this.localDevice.description=respuestaObjeto[0].description;
+    
+  }
+    //handler for managing response from server
 
     handlerGetResponse(status:number, response:string){
-        console.log(status);
-        //response object deleted:  refresh the page, print to console 
-        if(response=="Item deleted")
-          {console.log("deleted");
-           window.location.reload(); //page refresh
-           return;}
-        //response object status updated:  print to console
-        if(response=="Item status Updated")
-           {console.log("status updated");
-          // window.location.reload(); //page refresh          
-           return;}   
-
-         
-             
+        console.log(status);      
         //response for a list
         let respuestaObjetos:Array<Device> = JSON.parse(response);        
         let container=this.getElement("lista");

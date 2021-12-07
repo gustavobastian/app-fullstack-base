@@ -7,7 +7,8 @@ class Framework{
          //asynchronous request method
          xml.onreadystatechange = function respuestaServidor(){
              
-             if(xml.readyState == 4)//status 4 all transaction performed
+          
+            if(xml.readyState == 4)//status 4 all transaction performed
              {
                  listener.handlerGetResponse(xml.status, xml.response);  
              }                        
@@ -17,7 +18,28 @@ class Framework{
          xml.send();
     }
 
-    public requestDEL(url:string, listener:GetResponseListener,data:string){
+    
+    public requestGETSingle(url:string, listener:GetSingleResponseListener){
+        ///AJAX api rest GET
+        let xml = new XMLHttpRequest();
+
+        //asynchronous request method
+        xml.onreadystatechange = function respuestaServidor(){
+            
+         
+           if(xml.readyState == 4)//status 4 all transaction performed
+            {
+                listener.handlerGetSingleResponse(xml.status, xml.response);  
+            }                        
+
+        }
+        xml.open("GET", url,true);//true --->asincrona
+        xml.send();
+   }
+
+   
+
+    public requestDEL(url:string, listener:DeleteResponseListener,data:string){
         ///AJAX api rest DEL
         let xml = new XMLHttpRequest();
 
@@ -26,14 +48,14 @@ class Framework{
             
             if(xml.readyState == 4)//status 4 all transaction performed
             {
-                listener.handlerGetResponse(xml.status, xml.response);      
+                listener.handlerDeleteResponse(xml.status, xml.response);      
             }                        
         }
         xml.open("DELETE", url,true);//true --->asincrona
         xml.send(data);
    }
 
-   public requestPOSTN(url:string, listener:GetResponseListener,data:string){
+   public requestPOST(url:string, listener:PostResponseListener,data:string){
         ///AJAX api rest POST NEW
         let xml = new XMLHttpRequest();
         console.log(data);
@@ -42,7 +64,7 @@ class Framework{
             
             if(xml.readyState == 4)//status 4 all transaction performed
             {
-                listener.handlerGetResponse(xml.status, xml.response);      
+                listener.handlerPostResponse(xml.status, xml.response);      
             }                        
         }
         xml.open("POST", url,true);//true --->asincrona
@@ -52,18 +74,18 @@ class Framework{
 
 
 
-    public requestPUT(url:string, listener:GetResponseListener,data:string){
+    public requestPUT(url:string, listener:PostResponseListener,data:string){
     ///AJAX api rest PUT for state changes
     console.log("sending state changes")
     let xml = new XMLHttpRequest();
     console.log(data);
-    //asynchronous request method
+    //asynchronous PUT method
     let jdata=JSON.stringify(data);
     xml.onreadystatechange = function respuestaServidor(){
         
         if(xml.readyState == 4)//status 4 all transaction performed
         {
-            listener.handlerGetResponse(xml.status, xml.response);      
+            listener.handlerPostResponse(xml.status, xml.response);      
         }                        
     }
     xml.open("PUT", url,true);//true --->asincrona

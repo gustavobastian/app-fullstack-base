@@ -80,7 +80,7 @@ function displayDevice(disp:Device):string{
                     
                          <div class="switch">
                          <label class="white-text">
-                             On
+                             Off
                              `
 
                              if(disp.state==1)
@@ -95,7 +95,7 @@ function displayDevice(disp:Device):string{
                                            
                                     content+=`
                              <span class="lever"></span>
-                             Off
+                             On
                          </label>
                          <form action="#">
                          <label class="white-text">Speed/Level</label>
@@ -122,7 +122,9 @@ function displayDevice(disp:Device):string{
     `;}                                      
    
    content+= `<button class="mybutton" id="edit_${disp.id}"index.html">Edit</button>`;
+   
    content+= `<button class="mybutton" id="delete_${disp.id}">Delete</button>`;
+   
    
 
     return content;
