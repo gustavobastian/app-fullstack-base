@@ -8,11 +8,11 @@ var M;
  * framework: class that has all the methods for the AJAX
  */
 class Main implements EventListenerObject,PostResponseListener, PutResponseListener,GetSingleResponseListener,GetResponseListener,DeleteResponseListener{
-    private nombre:string;
-    private statusForm:string;
-    private deviceNumber:number;
-    private localDevice:Device;
-    private framework:Framework = new Framework();
+    public nombre:string;
+    public statusForm:string;
+    public deviceNumber:number;
+    public localDevice:Device;
+    public framework:Framework = new Framework();
     constructor(nombre:string){
         this.nombre=nombre;
         this.statusForm="waiting";
@@ -43,7 +43,7 @@ class Main implements EventListenerObject,PostResponseListener, PutResponseListe
          if((evInput.innerText=="add")&&this.statusForm=="waiting")
         {
            this.statusForm="inForm";
-           this.callForm(0); 
+           callForm(0,this); 
                
         }
         //if we cancelled the new device request we use the cancel button
@@ -75,7 +75,7 @@ class Main implements EventListenerObject,PostResponseListener, PutResponseListe
         else if((evInput.innerText=="Edit")&&this.statusForm=="waiting")
         {          
           this.editDevice(evInput.id); 
-          this.callForm(this.deviceNumber);                                    
+          callForm(this.deviceNumber,this);                                    
         }
         //Device state changes, we use a put method
         else if((evName[0]="ck")&&(this.statusForm=="waiting"))
@@ -99,7 +99,10 @@ class Main implements EventListenerObject,PostResponseListener, PutResponseListe
       
       let device=<HTMLInputElement>this.getElement("ck_"+id);
       console.log(device.checked);
-      let information = {"id":id,"status":device.checked}
+      let information = {
+                        "id":id,
+                        "status":device.checked
+                      }
       
       console.log(information);
       let data=JSON.stringify(information);
@@ -151,7 +154,12 @@ class Main implements EventListenerObject,PostResponseListener, PutResponseListe
       let deviceTypeLocal=parseInt(s);
      
 
-      let deviceLocal= {"name":deviceNameLocal.value,"type":deviceTypeLocal,"description":deviceDescriptionLocal.value,"id":id};  
+      let deviceLocal= {
+                        "name":deviceNameLocal.value,
+                        "type":deviceTypeLocal,
+                        "description":deviceDescriptionLocal.value,
+                        "id":id
+                      };  
       
       let data=JSON.stringify(deviceLocal);
 
@@ -203,82 +211,7 @@ class Main implements EventListenerObject,PostResponseListener, PutResponseListe
       }
       
     }
-
-
-    /**
-     *function callForm
-     *Generate a form for collecting information of a new device or editing a existing device
-     * @param num number of the device to be edite ("0" if creating a new device)
-     * 
-     */
-    public callForm(num:number):void{        
-      console.log("creating form");
-      //recovering from DOM the place where we put the form  
-      let containerForm=this.getElement("deviceForm");
-
-      if(this.statusForm=="inForm"){
-        this.localDevice.name="Name";
-        this.localDevice.description="Description";
-        this.localDevice.type=0;
-      }
-
-      console.log(this.localDevice.name);
-      let content= `<form id="LocalForm">                   
-                  <br>  
-                  <h>Device Type:</h>
-                  <br>
-
-                      <div class="input-field col s12">
-                      <label>Choose type</label>
-                      <form>
-                      <select class="browser-default" id="Device_Type_browser">
-                        <option value=""  selected></option>
-                        <option value="0">light </option>
-                        <option value="1">window </option>
-                        <option value="2">fan or air conditioner</option>
-                      </select>
-                      </form>
-                    </div>
-                        
-        <!--
-                  <br>  
-                  <h>Device Type:</h>
-                  <br>
-                  <p>0:light 1:window 2:fan or air conditioner</p>
-                   
-                  <div class="input-field col s6 m6 l6">                 
-                  <input placeholder="Device_Type" id="Device_Type" type="text" class="validate" value=${this.localDevice.type}>
-                  <label for="Device_Type">Device Type</label>
-                  </div>                -->
-                 <div class="input-field col s6 m6 l6">                 
-                  <input placeholder="Device_Name" id="Device_Name" type="text" class="validate" value="${this.localDevice.name}" >
-                  <label for="Device_Name">Device_Name</label>
-                 </div>
-
-                 <div class="input-field col s6 m6 l6">                                  
-                  <input placeholder="Device_Description" id="Device_Description" type="text" class="validate" value="${this.localDevice.description}">
-                  <label for="Device_Description">Device Description</label>
-                 </div>
-
-                 <button id="Cancel_button" class="btn waves-effect waves-light button-view" >CANCEL</button>
-                 <button id="Send_button" class="btn waves-effect waves-light button-view" >SEND</button>
-                 
-
-        `;
-
-      containerForm.innerHTML+=content;
-      containerForm.innerHTML+= `  </form> `;
-      
-      let CancelButton=this.getElement("Cancel_button");
-      let SendButton=this.getElement("Send_button");
-      
-      let devicetypeLocal= this.getElement("Device_Type_browser");
-      devicetypeLocal.addEventListener("change",this);
-
-      CancelButton.addEventListener("click",this);
-      SendButton.addEventListener("click",this);
-      window.scrollTo(0, 0); ///move to the form
-    }
+    
     /**
      * function hideForm()
      * Destroys the form used for add/editing the devices

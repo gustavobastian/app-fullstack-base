@@ -161,8 +161,23 @@ En esta sección podés ver los detalles específicos de funcionamiento del cód
 
 Presionando el boton "+" se despliega el formulario para incorporar un nuevo dispositivo.
 ![Agregar disp](doc/adding-device.png)
-Una vez completados todos los datos se presiona "Send".
+
+Se utiliza el selector para elegir el tipo de dispositivo.
+
+![Seleccionar tipo](doc/selecting-Type.png)
+Una vez completados todos los datos se presiona "Send" y se graban los cambios en la base de datos..
 Si se quiere cancelar se presiona "Cancel".
+
+### Editar un dispositivo
+Se presiona el boton "Edit" dentro del box del dispositivo.
+De esta manera se lanza el formulario de agregar dispositivo con el nombre y la descripción del dispositivo precargado.
+Una vez modificado se presiona "Send" y se graban los cambios en la base de datos.
+Si se quiere cancelar se presiona "Cancel".
+
+### Eliminar un dispositivo
+Se presiona el boton "Delete" dentro del box del dispositivo. Aparece un mensaje de confirmación de eliminación y en caso de presionar "OK" se elimina el mismo de la base de datos y se refresca la pagina.
+![Eliminar](doc/delete-confirmation.png)
+
 ### Frontend
 
 Completá todos los detalles sobre cómo armaste el frontend, sus interacciones, etc.
@@ -186,15 +201,86 @@ Completá todos los endpoints del backend con los metodos disponibles, los heade
     "request_body": {
         "devices": [
             {
-                "id": 1,
-                "status": true,
-                "description": "Kitchen light"
+                "id": 1, 
+                "name": "Lampara 1", 
+                "description": "Luz living", 
+                "state": 0, 
+                "type": 1,
             }
         ]
     },
 }
 ``` 
-
+2) Devolver el estado de un dispositivo identificado
+```json
+{
+    "method": "get",
+    "request_headers": "application/json",
+    "request_parameter": "id",
+    "request_body": "",
+    "response_code": 200,
+    "response_body": {     
+                "id": 1, 
+                "name": "Lampara 1", 
+                "description": "Luz living", 
+                "state": 0, 
+                "type": 1, 
+    },
+}
+```
+3) Eliminar dispositivo de la base de datos
+```json
+{
+    "method": "delete",
+    "request_headers": "application/json",
+    "request_parameter": "",
+    "request_body":{
+                    "id:1"
+                    },
+    "response_code": 200,
+    "response_body": {     
+                "Item deleted"
+    },
+}
+```
+4) Agregar/editar dispositivo en base de datos
+```json
+{
+    "method": "post",
+    "request_headers": "application/json",
+    "request_parameter": "",
+    "request_body": 
+                     {
+                        "name":"example",
+                        "type":"1",
+                        "description":"this is an example device",
+                        "id":"1"
+                      }
+                    ,
+    "response_code": 200,
+    "response_body": {     
+                "Item add"
+    },
+}
+```
+5) Cambiar estado de dispositivo en base de datos
+```json
+{
+    "method": "put",
+    "request_headers": "application/json",
+    "request_parameter": "",
+    "request_body": 
+                     {                       
+                        "id":"1",
+                        "status":" true",                      
+                      }
+                    ,
+    "response_code": 200,
+    "response_body": {     
+                "Item status Updated"
+    },
+}
+```
 </details>
 
 </details>

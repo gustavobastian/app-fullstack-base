@@ -13,7 +13,6 @@ class Device{
     public state : number;
     public type : number;    
 }
-
 /**
  *Function displayDevice
  *Generates the HTML structure for dynamically modify the web site

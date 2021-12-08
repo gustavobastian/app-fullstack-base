@@ -86,16 +86,13 @@ app.get('/devices/:id', function(req, res) {
  * @param res : response object
  */
 app.delete('/devices/', function(req, res, next) {
-    console.log("deleting "+req.params.id);
- //   console.log(req.params.id);
-    res.send("Item deleted").status(200);
     let received=JSON.stringify(req.body[0]);
-    
     
     //check database
     connection.query('Delete FROM Devices WHERE id ='+received, function(error,result, fields){
    //     console.log(result);        
     })
+    res.send("Item deleted").status(200);
 });
 
 /**
@@ -146,10 +143,8 @@ app.post('/devices/', function(req, res, next) {
  */
 app.put('/devices/', function(req, res, next) {
     
-           
-   
     requestLocal=JSON.parse(req.body[0]);
-   
+    
     let result=0;
     let sql = `UPDATE Devices SET state=${requestLocal.status} WHERE id=${requestLocal.id}`;
         
