@@ -62,7 +62,8 @@ class Framework{
     public requestDEL(url:string, listener:DeleteResponseListener,data:string){
         
         let xml = new XMLHttpRequest();
-
+        let jdata=JSON.stringify([data]);
+        console.log(jdata);
         //asynchronous request method
         xml.onreadystatechange = function respuestaServidor(){
             
@@ -72,7 +73,8 @@ class Framework{
             }                        
         }
         xml.open("DELETE", url,true);//true --->asincrona
-        xml.send(data);
+        xml.setRequestHeader("Content-Type","application/json;charset=UTF-8");
+        xml.send(jdata);
    }
    /**
     * function requestPOST
@@ -102,10 +104,10 @@ class Framework{
 
     /**
      * Function requestPUT
-     * It is used in order to change the status of the device, the server will check the value in the database and change it.
-     * @param url address and port of the server, id of the device as parameter
+     * It is used in order to change the status of the device.
+     * @param url address and port of the server
      * @param listener method who handles the response from the server
-     * @param data not used
+     * @param data id of the device to change state, and information of the state
      */
     public requestPUT(url:string, listener:PostResponseListener,data:string){
     ///AJAX api rest PUT for state changes
@@ -113,7 +115,7 @@ class Framework{
     let xml = new XMLHttpRequest();
     console.log(data);
     //asynchronous PUT method
-    let jdata=JSON.stringify(data);
+    let jdata=JSON.stringify([data]);
     xml.onreadystatechange = function respuestaServidor(){
         
         if(xml.readyState == 4)//status 4 all transaction performed
@@ -122,7 +124,7 @@ class Framework{
         }                        
     }
     xml.open("PUT", url,true);//true --->asincrona
-    
+    xml.setRequestHeader("Content-Type","application/json;charset=UTF-8");
     xml.send(jdata);
 }
 }

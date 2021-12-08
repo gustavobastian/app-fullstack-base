@@ -32,6 +32,8 @@ class Main implements EventListenerObject,PostResponseListener, PutResponseListe
         
         const evInput =ev.target as HTMLElement; 
         let evName=evInput.id.split("_");
+        
+        
         //for buttons
         if(ev.type == "click"){            
            console.log(evInput.innerText);   
@@ -50,19 +52,16 @@ class Main implements EventListenerObject,PostResponseListener, PutResponseListe
            this.statusForm="waiting";
            this.hideForm();     
         } 
-        //if we complete the form and want to publish the new device on the database
-        //Differents methods are called depending if the device is edited or a new one
-        else if((evInput.innerText=="SEND")&&this.statusForm=="inForm")
+        //if we complete the form and want to publish the new device on the database(if we are editing one.. we need to send id)        
+        else if((evInput.innerText=="SEND")&&(this.statusForm=="inForm"))
         {
            this.statusForm="waiting";
-           console.log("sending")
-           this.sendDevice();           
+           this.sendDevice(0);           
         } 
         else if((evInput.innerText=="SEND")&&this.statusForm=="inEdit")
         {
            this.statusForm="waiting";
-           console.log("sending")
-           this.sendEditedDevice(this.deviceNumber);           
+           this.sendDevice(this.deviceNumber);           
         }        
         //delete device
         else if((evInput.innerText=="Delete"))
@@ -92,14 +91,19 @@ class Main implements EventListenerObject,PostResponseListener, PutResponseListe
 
     /**
      * Function deviceStateChange
-     * @param id :device whos state is needed to change
+     * @param id :device id whose state is needed to change
      * @returns void
      */
 
     public deviceStateChange(id:number):void {
-      console.log("here 2");
-      let data="random";
-      this.framework.requestPUT("http://localhost:8000/devices/"+id,this,data);         
+      
+      let device=<HTMLInputElement>this.getElement("ck_"+id);
+      console.log(device.checked);
+      let information = {"id":id,"status":device.checked}
+      
+      console.log(information);
+      let data=JSON.stringify(information);
+      this.framework.requestPUT("http://localhost:8000/devices/",this,data);         
       return;
     }
 
@@ -111,24 +115,23 @@ class Main implements EventListenerObject,PostResponseListener, PutResponseListe
     public deleteDevice(object:string):void{
       console.log(object);
       let deviceNumber=object.split("_");
-      this.framework.requestDEL("http://localhost:8000/devices/"+deviceNumber[1],this,deviceNumber[1]);
+      this.framework.requestDEL("http://localhost:8000/devices/",this,deviceNumber[1]);
       return;                         
     }
 
         
     /**
      * function editDevice
+     * passes the id from the button to the form 
      * @param object string in the form "edit_nro" with "nro" as the id of the device the user wants to edit 
      * @returns void
      */
     public editDevice(object:string):void {
-      console.log(object);
       let deviceNumberLocal=object.split("_");
       this.deviceNumber=parseInt(deviceNumberLocal[1]);           
+      this.getDevice(this.deviceNumber);
+      this.statusForm="inEdit";      
       
-      this.statusForm="inEdit";
-      
-      //this.framework.requestGETSingle("http://localhost:8000/devices/"+this.deviceNumber,this);                   
      return;
     }
 
@@ -138,47 +141,27 @@ class Main implements EventListenerObject,PostResponseListener, PutResponseListe
      * and send it to the AJAX method
      * @returns void
      */
-    public sendDevice():void{
+    public sendDevice(id:number):void{
       
       let deviceNameLocal= <HTMLInputElement>this.getElement("Device_Name");     
-      let deviceTypeLocal= <HTMLInputElement>this.getElement("Device_Type");
       let deviceDescriptionLocal= <HTMLInputElement>this.getElement("Device_Description");
-      if((parseInt(deviceTypeLocal.value)<0)||(parseInt(deviceTypeLocal.value)>3))
-        {
-          window.alert("error in the type of the device!");
-          return;
-        }      
       
-      let deviceLocal= {"name":deviceNameLocal.value,"type":deviceTypeLocal.value,"description":deviceDescriptionLocal.value};  
+      let devicetypeLocal=<HTMLSelectElement> this.getElement("Device_Type_browser");
+      let s=devicetypeLocal.value;                 
+      let deviceTypeLocal=parseInt(s);
+     
+
+      let deviceLocal= {"name":deviceNameLocal.value,"type":deviceTypeLocal,"description":deviceDescriptionLocal.value,"id":id};  
       
       let data=JSON.stringify(deviceLocal);
+
+      
       //console.log(data2);
 
       this.framework.requestPOST("http://localhost:8000/devices/",this,data);                   
       return;
     }
-    /**
-     * Function sendEditedDevice
-     * Gets information from the edit form, check the type and send to the AJAX method
-     * @param id number of the device
-     * @returns void
-     */
-    public sendEditedDevice(id:number):void{
-      let deviceNameLocal= <HTMLInputElement>this.getElement("Device_Name");     
-      let deviceTypeLocal= <HTMLInputElement>this.getElement("Device_Type");
-      let deviceDescriptionLocal= <HTMLInputElement>this.getElement("Device_Description");
     
-      if((parseInt(deviceTypeLocal.value)<0)||(parseInt(deviceTypeLocal.value)>3))
-        {window.alert("error in the type of the device!");return;}      
-       
-      let deviceLocal= {"name":deviceNameLocal.value,"type":deviceTypeLocal.value,"description":deviceDescriptionLocal.value};  
-      
-      let data=JSON.stringify(deviceLocal);
-      //console.log(data2);
-
-      this.framework.requestPOST("http://localhost:8000/devices/"+id,this,data);                   
-      return;
-    }
     /**
      * function getElement
      * 
@@ -190,33 +173,90 @@ class Main implements EventListenerObject,PostResponseListener, PutResponseListe
     }
     
     /**
+     * function getDevice
+     * update the local device with information from the DOM
+     * @param num 
+     */
+    public getDevice(id:number):void { 
+     
+      let nameLocal=<HTMLElement>this.getElement("Name_"+id);
+      let descriptionLocal=<HTMLElement>this.getElement("Desc_"+id);
+      let typeLocal=<HTMLElement>this.getElement("Type_"+id);
+      //let typeLocal=<HTMLElement>this.getElement("Type_"+id);
+      console.log("name:"+nameLocal.outerText);
+      console.log(" description:"+descriptionLocal.outerText);
+      console.log("type:"+typeLocal.innerText);
+      this.localDevice.name=nameLocal.outerText;
+      this.localDevice.description=descriptionLocal.outerText;
+
+      if(typeLocal.innerText=="lightbulb_outline"){
+        this.localDevice.type=0;
+      }
+      else if(typeLocal.innerText=="dehaze"){
+        this.localDevice.type=1;
+      }
+      else if(typeLocal.innerText=="ac_unit"){
+        this.localDevice.type=2;
+      }
+      else {
+        this.localDevice.type=0;
+      }
+      
+    }
+
+
+    /**
      *function callForm
      *Generate a form for collecting information of a new device or editing a existing device
      * @param num number of the device to be edite ("0" if creating a new device)
-     * TODO:read from db or the DOM the values of the current object
+     * 
      */
     public callForm(num:number):void{        
       console.log("creating form");
-      //recovering from DOM the place where we put form  
+      //recovering from DOM the place where we put the form  
       let containerForm=this.getElement("deviceForm");
 
-      let content=  `<form id="LocalForm">                   
+      if(this.statusForm=="inForm"){
+        this.localDevice.name="Name";
+        this.localDevice.description="Description";
+        this.localDevice.type=0;
+      }
+
+      console.log(this.localDevice.name);
+      let content= `<form id="LocalForm">                   
+                  <br>  
+                  <h>Device Type:</h>
+                  <br>
+
+                      <div class="input-field col s12">
+                      <label>Choose type</label>
+                      <form>
+                      <select class="browser-default" id="Device_Type_browser">
+                        <option value=""  selected></option>
+                        <option value="0">light </option>
+                        <option value="1">window </option>
+                        <option value="2">fan or air conditioner</option>
+                      </select>
+                      </form>
+                    </div>
+                        
+        <!--
                   <br>  
                   <h>Device Type:</h>
                   <br>
                   <p>0:light 1:window 2:fan or air conditioner</p>
                    
                   <div class="input-field col s6 m6 l6">                 
-                  <input placeholder="Device_Type" id="Device_Type" type="text" class="validate">
+                  <input placeholder="Device_Type" id="Device_Type" type="text" class="validate" value=${this.localDevice.type}>
                   <label for="Device_Type">Device Type</label>
-                  </div>                
+                  </div>                -->
                  <div class="input-field col s6 m6 l6">                 
-                  <input placeholder="Device_Name" id="Device_Name" type="text" class="validate">
-                  <label for="Device_Name">Device Name</label>
+                  <input placeholder="Device_Name" id="Device_Name" type="text" class="validate" value="${this.localDevice.name}" >
+                  <label for="Device_Name">Device_Name</label>
                  </div>
 
                  <div class="input-field col s6 m6 l6">                                  
-                  <input placeholder="Device_Description" id="Device_Description" type="text" class="validate">
+                  <input placeholder="Device_Description" id="Device_Description" type="text" class="validate" value="${this.localDevice.description}">
                   <label for="Device_Description">Device Description</label>
                  </div>
 
@@ -225,12 +265,16 @@ class Main implements EventListenerObject,PostResponseListener, PutResponseListe
                  
 
         `;
-//onclick="index.html"
+
       containerForm.innerHTML+=content;
       containerForm.innerHTML+= `  </form> `;
       
       let CancelButton=this.getElement("Cancel_button");
       let SendButton=this.getElement("Send_button");
+      
+      let devicetypeLocal= this.getElement("Device_Type_browser");
+      devicetypeLocal.addEventListener("change",this);
+
       CancelButton.addEventListener("click",this);
       SendButton.addEventListener("click",this);
       window.scrollTo(0, 0); ///move to the form
@@ -245,6 +289,7 @@ class Main implements EventListenerObject,PostResponseListener, PutResponseListe
         let containerForm=this.getElement("deviceForm");
         
         containerForm.innerHTML+= ``;
+        window.location.reload();
         return;
     }
 
@@ -260,9 +305,8 @@ class Main implements EventListenerObject,PostResponseListener, PutResponseListe
         //response object Item Add:  print to console
         if(response=="Item add")
         {console.log("Item added");
-        // window.location.reload(); //page refresh          
-        return;}      
-          
+         window.location.reload(); //page refresh          
+        return;}                
 
     }
 

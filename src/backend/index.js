@@ -12,7 +12,8 @@ app.use(express.json());
 // to serve static files
 app.use(express.static('/home/node/app/static/'));
 // to parse received data
-var bodyParser = require('body-parser')
+var bodyParser = require('body-parser');
+const { request } = require('express');
 
 
 //=======[ Main module code ]==================================================
@@ -80,17 +81,19 @@ app.get('/devices/:id', function(req, res) {
 
 /**
  * Function that remove one specific device from the database in response to a delete request
- * @param :id id of the device
- * @param req : request object
+ * 
+ * @param req : request object contains id of device to be deleted
  * @param res : response object
  */
-app.delete('/devices/:id', function(req, res, next) {
+app.delete('/devices/', function(req, res, next) {
     console.log("deleting "+req.params.id);
  //   console.log(req.params.id);
     res.send("Item deleted").status(200);
-
+    let received=JSON.stringify(req.body[0]);
+    
+    
     //check database
-    connection.query('Delete FROM Devices WHERE id ='+req.params.id, function(error,result, fields){
+    connection.query('Delete FROM Devices WHERE id ='+received, function(error,result, fields){
    //     console.log(result);        
     })
 });
@@ -112,11 +115,17 @@ app.post('/devices/', function(req, res, next) {
     deviceName=JSON.stringify(received.name);
     deviceType=JSON.stringify(received.type);
     deviceDescription=JSON.stringify(received.description);
+    deviceID=JSON.stringify(received.id);
+    let sql = ``;
+    console.log("device ask:"+deviceID);
+    //preparing sql sentence for insertion, by default all devices are set with state false at insertion
+    if(deviceID==0){
+        sql += `INSERT INTO Devices (name, type, description,state) VALUES (${deviceName},${deviceType},${deviceDescription}, '0')`;
+    }
+    else{
+        sql += `UPDATE Devices SET name=${deviceName},type=${deviceType}, Description=${deviceDescription} WHERE id=${deviceID}`;
+    }
     
-    
-    //preparing sql sentence for insertion, by default all devices are set with status 0 at insertion
-    let sql = `INSERT INTO Devices (name, type, description,state) VALUES (${deviceName},${deviceType},${deviceDescription}, '0')`;
-    //let sql = `INSERT INTO Devices (name, type, description,state) VALUES (?,?,?,'0')`,[name,type,description];
     //inserting device to database
     connection.query(sql, function(error,result){
         if (error) throw error;
@@ -128,39 +137,6 @@ app.post('/devices/', function(req, res, next) {
 });
 
 
-/**
- * Function that update a device in the database. 
- * @param req object. Object that contains the updated information of the device.
- * @param res object. Response from server.
- */
-
-app.post('/devices/:id', function(req, res, next) {
-        
-    let received=req.body;
-    //sentences for debug
-    /*console.log("name: "+received.name);
-    console.log("type: "+received.type);
-    console.log("description: "+received.description);*/
-
-    //converting received data into string for use them in the sql sentence
-    deviceName=JSON.stringify(received.name);
-    deviceType=JSON.stringify(received.type);
-    deviceDescription=JSON.stringify(received.description);
-    deviceID=JSON.stringify(req.params.id);
-    
-    
-    //preparing sql sentence for insertion, by default all devices are set with status 0 at insertion
-    let sql = `UPDATE Devices SET name=${deviceName},type=${deviceType}, Description=${deviceDescription} WHERE id=${deviceID}`;
-    
-    //inserting device to database
-    connection.query(sql, function(error,result){
-        if (error) throw error;
-        console.log("Number of records updated: " + result.affectedRows);
-    })       
-    //send response to frontend
-    res.send("Item Updated").status(200);
-    res.end();
-});
 
 //Put method for change device state
 /**
@@ -168,45 +144,22 @@ app.post('/devices/:id', function(req, res, next) {
  * @params :id - device id
  * 
  */
-app.put('/devices/:id', function(req, res, next) {
+app.put('/devices/', function(req, res, next) {
     
-    let value1="1";    
-    deviceID=JSON.stringify(req.params.id);
-    deviceState="0";
-    
+           
+   
+    requestLocal=JSON.parse(req.body[0]);
+   
     let result=0;
-    //recover from database current state
-    connection.query(`SELECT state  FROM Devices WHERE id =${deviceID}`, function (error,result){
-        //console.log("previus state: "+JSON.stringify(result[0])); 
-       
-        deviceState= (JSON.stringify(result[0])).split(":");
-        value1=JSON.stringify(deviceState[1]);
-        console.log(value1);
-        let returned=value1.indexOf("1");  
-        //change state
-        if(returned!="-1")
-        {result=0;
-        console.log("cambiando a 0");
-        }
-        else {
-        result=1;
-        console.log("cambiando a 1");
-        } 
-
-
-        let sql = `UPDATE Devices SET state=${result} WHERE id=${deviceID}`;
+    let sql = `UPDATE Devices SET state=${requestLocal.status} WHERE id=${requestLocal.id}`;
         
         //inserting device to database
-        connection.query(sql, function(error,result){
+     connection.query(sql, function(error,result){
             if (error) throw error;
-            console.log("Number of records updated: " + result.affectedRows);
-        }); 
+            console.log("device updated: " + result.affectedRows);
+        
 
     });
-    
-    
-    
-  
      
     //send response to frontend
     res.send("Item status Updated").status(200);
