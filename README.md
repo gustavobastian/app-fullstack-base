@@ -159,7 +159,7 @@ En esta sección podés ver los detalles específicos de funcionamiento del cód
 ### Agregar un dispositivo
 
 
-Presionando el boton "+" se despliega el formulario para incorporar un nuevo dispositivo.
+Presionando el botón "+" se despliega el formulario para incorporar un nuevo dispositivo.
 ![Agregar disp](doc/adding-device.png)
 
 Se utiliza el selector para elegir el tipo de dispositivo.
@@ -169,35 +169,91 @@ Una vez completados todos los datos se presiona "Send" y se graban los cambios e
 Si se quiere cancelar se presiona "Cancel".
 
 ### Editar un dispositivo
-Se presiona el boton "Edit" dentro del box del dispositivo.
+Se presiona el botón "Edit" dentro del box del dispositivo.
 De esta manera se lanza el formulario de agregar dispositivo con el nombre y la descripción del dispositivo precargado.
 Una vez modificado se presiona "Send" y se graban los cambios en la base de datos.
 Si se quiere cancelar se presiona "Cancel".
 
 ### Eliminar un dispositivo
-Se presiona el boton "Delete" dentro del box del dispositivo. Aparece un mensaje de confirmación de eliminación y en caso de presionar "OK" se elimina el mismo de la base de datos y se refresca la pagina.
+Se presiona el botón "Delete" dentro del box del dispositivo. Aparece un mensaje de confirmación de eliminación y en caso de presionar "OK" se elimina el mismo de la base de datos y se refresca la pagina.
 ![Eliminar](doc/delete-confirmation.png)
 ### Ver pantalla de ayuda
-Se presiona el boton "Help" dentro de la barra superior. Al presionar el boton "Exit" se retorna a la página web.
+Se presiona el botón "Help" dentro de la barra superior. Al presionar el botón "Exit" se retorna a la página web.
 ![Eliminar](doc/help.png)
 
 
 ### Frontend
 
-Completá todos los detalles sobre cómo armaste el frontend, sus interacciones, etc.
+El frontend posee solo un archivo html. La página se modifica dinámicamente según el usuario.
 
-Archivo principal "Index.HTML":<br>
+Archivo principal "/frontend/index.HTML":<br>
 Contiene 2 partes, head y body.<br>
 En el header se colocaron: <br>
-*  la referencia a Materialize
-*  la referencia a los iconos de materialize
-*  la referecia al style.css local
+*  la referencia a Materialize.
+*  la referencia a los iconos de materialize.
+*  la referecia al style.css local.
 *  la escala de referencia para la característica responsive de la página.
+
+Dentro del body se colocan los tres sectores: barra superior, cuerpo main y barra inferior.
 <br>
-Dentro del body se colocan tres sectores: barra superior, cuerpo main y barra inferior.
+
+En la barra superior, se encuentra el nombre de la página y un botón de ayuda.<br>
+En la barra en la barra inferior, se encuentra el nombre del autor de la página y las formas poder contactar con el mismo.<br>
+Dentro del cuerpo main, se aloja un botón "+" que permite ingresar dispositivos, un contenedor con id="deviceForm" que alojará formularios de edición y guia de ayuda, inicialmente vacio. Finalmente se presentan los bloques con los distintos dispositivos que posee la base de datos.<br> 
+La composición de la cuadrícula de los dispositivos se realiza en forma dinámica al cargar la página.<br>
+Al finalizar el cuerpo main se colocan los enlaces a los script JS que se utilizan en la página.<br>
+
+<strong>Directorio "/frontend/ts":</strong><br>
+Dentro de este directorio se encuentran todos los archivos typescript que permiten el funcionamiento dinámico de la página. Se describen a continuación:<br>
+* devices.ts: archivo que contiene la clase device con todos los parámetros que poseen los dispositivos cargados en la base de datos y la funcion displayDevice, que devuelve un string con contenido html que genera para una de las tarjetas de los dispositivos y cuyo parametro de entrada es una instancia de la clase Device. Esta función selecciona el logo del dispositivo según el tipo e incorpora los botones de "Edit" y "Delete".
+* Formulary.ts: archivo que posee las 3 funciones que permiten la conformación, la generación y la destruccion del formulario para ingresar un nuevo dispositivo o editar uno ya creado.<br>
+  <u>Función createForm</u>: funcion que devuelve un string con código HTMl para la conformación del formulario. El mismo posee un seleccionador para el tipo de dispositivo , 2 entradas de texto(para el nombre y la descripcion) y dos botones ("Send" y "Cancel"). El parámetro que se pasa es una instancia de la clase Device de la cual se obtienen los datos precargados.<br>
+  <u>Función callForm</u>: funcion que recibe como parametro una instancia de la clase main(que contiene la ventana principal). Esta funcion busca del DOM el objeto con id="deviceForm"(que se crea en index.html) y le asigna el valor devuelto por createForm(funcion que se llama con parametro la instancia del objeto device que contiene la clase main). Luego de esto, asigna a los botones el listener de eventos.<br>
+  <u>Función hideForm</u>: funcion que recibe como parametro una instancia de la clase main, busca del dom el objeto con id="deviceForm" y lo vacía. Luego de esto, refresca la pagina.
+  
+* Help.ts : funciones similares a las que generan el formulario, y utiliza el mismo container de la página, solo que no se edita su interior y posee un solo botón de salida.<br>
+ <u>Función createHelp</u>: genera el texto de ayuda,<br>
+ <u>Función callHelp</u>: obtiene del DOM el objeto deviceForm y le asigna el texto generado con createHelp y asigna al botón de salida el listener de eventos<br>
+ <u>Función hideHelp</u>: destruye el help.<br>
+
+* framework.ts : archivo de define una clase que contiene las funciones AJAX que se utilizan para comunicarse con el servidor.<br>
+<u>public requestGET</u>: con parametros URL del servidor y  clase listener de respuestas, solicita al servidor la lista de todos los dispositivos de la base de datos. La clase listerner que se pasa como referencia debe poseer implementada la interfase descripta en "GetResponseListener".<br>
+<u>public requestDEL</u>: con parametros URL del servidor, clase listener de respuestas y un string data con el id del dispositivo a borrar. Esta función solicita al servidor que elimine un dispositivo específico de la base de datos. La clase listerner que se pasa como referencia debe poseer implementada la interfase descripta en "DeleteResponseListener".<br>
+<u>public requestPOST</u>: con parametros URL del servidor, clase listener de respuestas y un string formato JSON con la estructura de un dispositivo, solicita al servidor que ingrese a la base de datos el dispositivo. En caso de ya existir un dispositivo con esa id, se actualizan sus datos. La clase listerner que se pasa como referencia debe poseer implementada la interfase descripta en "POSTResponseListener".<br>
+<u>public requestPUT</u>: con parametros URL del servidor, clase listener de respuestas y string con identificación del dispositivo, solicita al servidor que actualice en la base de datos el estado del dispositivo. La clase listerner que se pasa como referencia debe poseer implementada la interfase descripta en "PUTResponseListener".<br>
+
+* main.ts : archivo de define una clase la clase principal de la página.<br>
+  La clase main contiene los siguientes elementos:<br>
+  nombre: string que posee el nombre la clase.
+  statusForm: string que permite filtrar los eventos de los botones. Posee 4 posibilidades: "waiting","inForm","inEdit" y "inHelp".<br>
+  deviceNumber: numero de dispositivo, se utiliza para guardar la información del dispositivo actual.<br>
+  localDevice: instancia de Device que guarda los datos del dispositivo que se quiere editar. <br>
+  framework: instancia de la clase que contiene las funciones para comunicarse con el servidor. <br>
+
+  El constructor de la clase main consulta mediante la función requestGet la lista de dispositivos que contiene la base de datos. Al  cargarse la página se llama a este constructor.<br>
+
+  Función handleEvent: recibe como parametro un evento. Filtra que solo sea un evento del tipo "click".<br>
+  Luego de ello, dependiendo del texto que posea el botón y del statusForm en que se encuentre la clase Main, se llaman a distintas funciones. <br>
+
+  Función deviceStateChangue: se llama cuando se activa o se desactiva un switch en un dispositivo. Se obtiene el dispositivo desde el DOM y se llama a la funcion requestPUT pasando como parametro el dispositivo en formato JSON con el estado actualizado.<br>
+
+  Función deleteDevice: se llama cuando se presiona el botón "Delete" y se confirma con "ok". Recibe como parametro el id del dispositivo a eliminar y llama a la funcion requestDel con dicho id como parametro.<br>
+
+
+  Función editDevice: se llama cuando se presiona el botón "Edit" y el statusForm es "waiting". Recibe como parametro el id del dispositivo a editar dentro de un string. Obtiene la informacion fragmentando el string.  Llama a la funcion getDevice con dicho id como parametro, cargando en el componente localDevice los parametros a editar. Luego de esto, pasa el statusForm a "inEdit" y retorna<br>
+
+  Función sendDevice: se llama cuando se presiona el botón "Send" y el statusForm es "inEdit" o "inForm". Recibe como parametro el id del dispositivo a enviar. Obtiene la informacion buscando los objetos del formulario desde el DOM. Genera el JSON con la información del dispositivo y llama a la funcion requestPost con dicho id como parametro. Luego de ello retorna.<br>  
+
+  Función getElement: tiene como parametro un string con la id del elemento y retorna el objeto HTMLelement del DOM.<br>  
+
+  Función getDevice: tiene como parametro la id del elemento y utilizando la funcion getElement, carga en el componente localDevice de la clase Main todos los parámetros del dispositivo.<br>  
+
+  La clase Main implementa todas las respuestas a las funciones de la clase framework. En el caso de GetResponseListener, genera toda la lista de dispositivos. Mientras que en las funciones PostResponseListener, DeleteResponseListener y PutResponseListener, en caso de haber algun error, genera un mensaje de alerta en la ventana. Si no hubo error, solo imprime en la consola el mensaje del servidor.  
 
 
 
+
+<br>
 
 
 
@@ -206,9 +262,11 @@ Dentro del body se colocan tres sectores: barra superior, cuerpo main y barra in
 
 Completá todos los detalles de funcionamiento sobre el backend, sus interacciones con el cliente web, la base de datos, etc.
 
+El backend fue desarrollado en NodeJs utilizando express JS. Posee cuatro endpoints que permiten al cliente interactuar con la base de dato.
+
 <details><summary><b>Ver los endpoints disponibles</b></summary><br>
 
-Completá todos los endpoints del backend con los metodos disponibles, los headers y body que recibe, lo que devuelve, ejemplos, etc.
+<!--Completá todos los endpoints del backend con los metodos disponibles, los headers y body que recibe, lo que devuelve, ejemplos, etc.-->
 
 1) Devolver el estado de los dispositivos.
 
@@ -231,7 +289,7 @@ Completá todos los endpoints del backend con los metodos disponibles, los heade
         ]
     },
 }
-
+```
 2) Eliminar dispositivo de la base de datos
 ```json
 {
@@ -267,7 +325,7 @@ Completá todos los endpoints del backend con los metodos disponibles, los heade
     },
 }
 ```
-) Cambiar estado de dispositivo en base de datos
+4) Cambiar estado de dispositivo en base de datos
 ```json
 {
     "method": "put",
