@@ -184,7 +184,7 @@ Se presiona el botón "Help" dentro de la barra superior. Al presionar el botón
 
 ### Frontend
 
-El frontend posee solo un archivo html. La página se modifica dinámicamente según el usuario.
+El frontend posee solo un archivo html. La página se modifica dinámicamente según el accionar del usuario.
 
 Archivo principal "/frontend/index.HTML":<br>
 Contiene 2 partes, head y body.<br>
@@ -213,14 +213,14 @@ Dentro de este directorio se encuentran todos los archivos typescript que permit
   
 * Help.ts : funciones similares a las que generan el formulario, y utiliza el mismo container de la página, solo que no se edita su interior y posee un solo botón de salida.<br>
  <u>Función createHelp</u>: genera el texto de ayuda,<br>
- <u>Función callHelp</u>: obtiene del DOM el objeto deviceForm y le asigna el texto generado con createHelp y asigna al botón de salida el listener de eventos<br>
+ <u>Función callHelp</u>: obtiene del DOM el objeto deviceForm, le asigna el texto generado con createHelp y asigna al botón de salida el listener de eventos<br>
  <u>Función hideHelp</u>: destruye el help.<br>
 
-* framework.ts : archivo de define una clase que contiene las funciones AJAX que se utilizan para comunicarse con el servidor.<br>
-<u>public requestGET</u>: con parametros URL del servidor y  clase listener de respuestas, solicita al servidor la lista de todos los dispositivos de la base de datos. La clase listerner que se pasa como referencia debe poseer implementada la interfase descripta en "GetResponseListener".<br>
-<u>public requestDEL</u>: con parametros URL del servidor, clase listener de respuestas y un string data con el id del dispositivo a borrar. Esta función solicita al servidor que elimine un dispositivo específico de la base de datos. La clase listerner que se pasa como referencia debe poseer implementada la interfase descripta en "DeleteResponseListener".<br>
-<u>public requestPOST</u>: con parametros URL del servidor, clase listener de respuestas y un string formato JSON con la estructura de un dispositivo, solicita al servidor que ingrese a la base de datos el dispositivo. En caso de ya existir un dispositivo con esa id, se actualizan sus datos. La clase listerner que se pasa como referencia debe poseer implementada la interfase descripta en "POSTResponseListener".<br>
-<u>public requestPUT</u>: con parametros URL del servidor, clase listener de respuestas y string con identificación del dispositivo, solicita al servidor que actualice en la base de datos el estado del dispositivo. La clase listerner que se pasa como referencia debe poseer implementada la interfase descripta en "PUTResponseListener".<br>
+* framework.ts : archivo de define una clase que contiene las funciones Asincrónicas que se utilizan para comunicarse con el servidor.<br>
+<u>public requestGET</u>: con parametros URL del servidor y  clase listener que analizará las respuestas, solicita al servidor la lista de todos los dispositivos de la base de datos. La clase listerner que se pasa como referencia debe poseer implementada la interfase descripta en "GetResponseListener".<br>
+<u>public requestDEL</u>: con parametros URL del servidor, clase listener que analizará las respuestas y un string data con el id del dispositivo a borrar. Esta función solicita al servidor que elimine un dispositivo específico de la base de datos. La clase listerner que se pasa como referencia debe poseer implementada la interfase descripta en "DeleteResponseListener".<br>
+<u>public requestPOST</u>: con parametros URL del servidor, clase listener que analizará las respuestas y un string formato JSON con la estructura de un dispositivo, solicita al servidor que ingrese a la base de datos el dispositivo. En caso de ya existir un dispositivo con esa id, se actualizan sus datos. La clase listerner que se pasa como referencia debe poseer implementada la interfase descripta en "POSTResponseListener".<br>
+<u>public requestPUT</u>: con parametros URL del servidor, clase listener que analizará las respuestas y string con identificación del dispositivo, solicita al servidor que actualice en la base de datos el estado del dispositivo. La clase listerner que se pasa como referencia debe poseer implementada la interfase descripta en "PUTResponseListener".<br>
 
 * main.ts : archivo de define una clase la clase principal de la página.<br>
   La clase main contiene los siguientes elementos:<br>
