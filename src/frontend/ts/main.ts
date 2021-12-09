@@ -18,6 +18,7 @@ class Main implements EventListenerObject,PostResponseListener, PutResponseListe
         this.statusForm="waiting";
         this.deviceNumber=0;
         this.localDevice = new Device();
+        
         this.framework.requestGET("http://localhost:8000/devices",this);                  
         
     }
@@ -240,6 +241,11 @@ class Main implements EventListenerObject,PostResponseListener, PutResponseListe
         {console.log("Item added");
          window.location.reload(); //page refresh          
         return;}                
+        else{
+          window.alert("Error adding device");
+          window.location.reload(); //page refresh
+          return;  
+        }        
 
     }
 
@@ -255,7 +261,12 @@ class Main implements EventListenerObject,PostResponseListener, PutResponseListe
       if(response=="Item status Updated")
          {console.log("status updated");
         // window.location.reload(); //page refresh          
-         return;}   
+         return;}
+      else{
+          window.alert("Error updating device status");
+          window.location.reload(); //page refresh
+          return;  
+        }        
     } 
 
     /**
@@ -268,12 +279,19 @@ class Main implements EventListenerObject,PostResponseListener, PutResponseListe
       console.log(status);
       //response object deleted:  refresh the page, print to console 
       if(response=="Item deleted")
-        {console.log("deleted");
+        {
+         //console.log("deleted");
          window.location.reload(); //page refresh
         return;}
+      else{
+        window.alert("Error deleting device");
+        window.location.reload(); //page refresh
+        return;
+
+      }  
   }
   
-   
+    
     /**
      * function HandlerGetResponse
      * Calls for a list of device from the database, and generate the landing page of the application.

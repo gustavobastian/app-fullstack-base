@@ -24,24 +24,41 @@
                     <br>
   
                         <div class="input-field col s12">
-                        <label>Choose type</label>
+                        <!--<label>Choose type</label>-->
                         <form>
-                        <select class="browser-default" id="Device_Type_browser">
-                          <option value=""  selected></option>
-                          <option value="0">light </option>
+                        <select class="browser-default" id="Device_Type_browser">`
+
+           if(localMain.localDevice.type==0){             
+                  content+=`<option value="0" selected>light </option>
                           <option value="1">window </option>
-                          <option value="2">fan or air conditioner</option>
-                        </select>
+                          <option value="2">fan or air conditioner</option>`}
+           else if(localMain.localDevice.type==1){             
+                            content+=`<option value="0" >light </option>
+                                    <option value="1" selected>window </option>
+                                    <option value="2">fan or air conditioner</option>`}               
+           else if(localMain.localDevice.type==2){             
+                                      content+=`<option value="0" >light </option>
+                                              <option value="1" >window </option>
+                                              <option value="2" selected>fan or air conditioner</option>`}               
+
+
+             content+=         `</select>
                         </form>
                       </div>
-                   <div class="input-field col s6 m6 l6">                 
+                   <div class="input-field col s6 m6 l6">    
+                    <br>  
+                    <h>Device Name:</h>
+                    <br>             
                     <input placeholder="Device_Name" id="Device_Name" type="text" class="validate" value="${localMain.localDevice.name}" >
-                    <label for="Device_Name">Device_Name</label>
+                   <!-- <label for="Device_Name">Device_Name</label>-->
                    </div>
   
                    <div class="input-field col s6 m6 l6">                                  
+                    <br>  
+                    <h>Device Description:</h>
+                    <br>             
                     <input placeholder="Device_Description" id="Device_Description" type="text" class="validate" value="${localMain.localDevice.description}">
-                    <label for="Device_Description">Device Description</label>
+                    <!--<label for="Device_Description">Device Description</label>-->
                    </div>
   
                    <button id="Cancel_button" class="btn waves-effect waves-light button-view" >CANCEL</button>

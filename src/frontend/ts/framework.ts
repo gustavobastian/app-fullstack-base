@@ -13,7 +13,8 @@ class Framework{
     public requestGET(url:string, listener:GetResponseListener){
          
          let xml = new XMLHttpRequest();
-
+         
+         
          xml.onreadystatechange = function respuestaServidor(){
              
           
@@ -24,6 +25,7 @@ class Framework{
  
          }
          xml.open("GET", url,true);//true --->asincrona
+         xml.setRequestHeader("Content-Type","application/json;charset=UTF-8");
          xml.send();
     }
 
