@@ -7,7 +7,7 @@ var M;
  * localDevice: Device for storing current data of one device(not used in the app)
  * framework: class that has all the methods for the AJAX
  */
-class Main implements EventListenerObject,PostResponseListener, PutResponseListener,GetSingleResponseListener,GetResponseListener,DeleteResponseListener{
+class Main implements EventListenerObject,PostResponseListener, PutResponseListener,GetResponseListener,DeleteResponseListener{
     public nombre:string;
     public statusForm:string;
     public deviceNumber:number;
@@ -273,24 +273,7 @@ class Main implements EventListenerObject,PostResponseListener, PutResponseListe
         return;}
   }
   
-    /**
-     * Handler for the response of getsingleResponse method use for ask for a specified device
-     * the device information received is stored in the main class component localDevice.
-     * @param status status of communication
-     * @param response response of the server 
-     * @returns void
-     * 
-     */  
-  handlerGetSingleResponse(status:number, response:string){
-    console.log(status);      
-       
-    let respuestaObjeto= JSON.parse(response);     
-    console.log(respuestaObjeto[0]);
-    this.localDevice.name=respuestaObjeto[0].name;
-    this.localDevice.type=respuestaObjeto[0].type;
-    this.localDevice.description=respuestaObjeto[0].description;
-    return;
-  }
+   
     /**
      * function HandlerGetResponse
      * Calls for a list of device from the database, and generate the landing page of the application.

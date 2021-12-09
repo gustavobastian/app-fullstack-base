@@ -27,30 +27,7 @@ class Framework{
          xml.send();
     }
 
-    /**
-     * function requestGETSingle
-     * Method that ask for a specified device of the database
-     * @param url address and port of the server, it contains the id of the device as a parameter
-     * @param listener method to be called for analyse the response
-     */
-    public requestGETSingle(url:string, listener:GetSingleResponseListener){
-        ///AJAX api rest GET
-        let xml = new XMLHttpRequest();
-
-        //asynchronous request method
-        xml.onreadystatechange = function respuestaServidor(){
-            
-         
-           if(xml.readyState == 4)//status 4 all transaction performed
-            {
-                listener.handlerGetSingleResponse(xml.status, xml.response);  
-            }                        
-
-        }
-        xml.open("GET", url,true);//true --->asincrona
-        xml.send();
-   }
-
+    
     /**
      * function requestDEL
      * Function that orders to the server to remove a device.

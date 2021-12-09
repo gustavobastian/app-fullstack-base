@@ -55,28 +55,6 @@ app.get('/devices/', function(req, res, next) {
     })
 });
 
-//
-/**
- * Function that sends one specific device to the client in response to a request
- * @param req: request object from client
- * @param res: Response object from Server
- * @param :id the id of the device
- */
-app.get('/devices/:id', function(req, res) {
-    idAb=req.params.id;    
-    //uncomment next tree lines if you want to use the file storage
-    /*
-    let datos=require('./datos.json');
-    let datosfiltrados=datos.filter(item => item.id==req.params.id);
-    res.send(datosfiltrados).status(200);*/
-
-    //uncomment next query if you want to use the database
-    connection.query('SELECT *  FROM Devices WHERE id ='+idAb, function(error,result, fields){
-        //console.log(result);    
-        res.send(result).status(200);
-        return;    
-    })
-});
 
 
 /**

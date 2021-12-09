@@ -182,6 +182,11 @@ Se presiona el boton "Delete" dentro del box del dispositivo. Aparece un mensaje
 
 Completá todos los detalles sobre cómo armaste el frontend, sus interacciones, etc.
 
+Archivo principal "Index.HTML":
+
+
+
+
 ### Backend
 
 Completá todos los detalles de funcionamiento sobre el backend, sus interacciones con el cliente web, la base de datos, etc.
@@ -210,25 +215,8 @@ Completá todos los endpoints del backend con los metodos disponibles, los heade
         ]
     },
 }
-``` 
-2) Devolver el estado de un dispositivo identificado
-```json
-{
-    "method": "get",
-    "request_headers": "application/json",
-    "request_parameter": "id",
-    "request_body": "",
-    "response_code": 200,
-    "response_body": {     
-                "id": 1, 
-                "name": "Lampara 1", 
-                "description": "Luz living", 
-                "state": 0, 
-                "type": 1, 
-    },
-}
-```
-3) Eliminar dispositivo de la base de datos
+
+2) Eliminar dispositivo de la base de datos
 ```json
 {
     "method": "delete",
@@ -243,7 +231,7 @@ Completá todos los endpoints del backend con los metodos disponibles, los heade
     },
 }
 ```
-4) Agregar/editar dispositivo en base de datos
+3) Agregar/editar dispositivo en base de datos
 ```json
 {
     "method": "post",
@@ -263,7 +251,7 @@ Completá todos los endpoints del backend con los metodos disponibles, los heade
     },
 }
 ```
-5) Cambiar estado de dispositivo en base de datos
+4) Cambiar estado de dispositivo en base de datos
 ```json
 {
     "method": "put",

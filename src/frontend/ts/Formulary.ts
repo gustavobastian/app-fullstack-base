@@ -3,8 +3,9 @@
     */
 
    /**
-     * 
-     * @param num id of the device to edit(0 if a new device)
+     *function createForm
+     *generate the html of the device editing/adding form
+     * @param num id of the device to edit('0' if a new device)
      * @returns string with form preloaded
      */
      function createForm(num:number,localMain:Main):string{        
@@ -52,10 +53,12 @@
        return content;
       }
   
-      /**
+    /**
+     * function callForm
      * 
-     * 
-     */
+     * @param num  id of the device('0' if new)
+     * @param localMain page where is the form
+     */  
     function callForm(num:number,localMain:Main):void{
         console.log("creating form");
   

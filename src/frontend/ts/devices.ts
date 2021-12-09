@@ -68,7 +68,7 @@ function displayDevice(disp:Device):string{
                        </div>                           
                    </div>
                    `;
-                     
+    /*   this code add a slider for fan speed or temperature selection...(needs works)
     if(disp.type==2){
         content +=`      <form action="#">
                          <label class="white-text">Speed/Level</label>
@@ -77,7 +77,7 @@ function displayDevice(disp:Device):string{
                          </p>`}
     else{
         content+=`<br><br><br><br>`;
-    };                     
+    };      */               
 
                               
     
