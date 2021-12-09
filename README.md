@@ -177,12 +177,27 @@ Si se quiere cancelar se presiona "Cancel".
 ### Eliminar un dispositivo
 Se presiona el boton "Delete" dentro del box del dispositivo. Aparece un mensaje de confirmación de eliminación y en caso de presionar "OK" se elimina el mismo de la base de datos y se refresca la pagina.
 ![Eliminar](doc/delete-confirmation.png)
+### Ver pantalla de ayuda
+Se presiona el boton "Help" dentro de la barra superior. Al presionar el boton "Exit" se retorna a la página web.
+![Eliminar](doc/help.png)
+
 
 ### Frontend
 
 Completá todos los detalles sobre cómo armaste el frontend, sus interacciones, etc.
 
-Archivo principal "Index.HTML":
+Archivo principal "Index.HTML":<br>
+Contiene 2 partes, head y body.<br>
+En el header se colocaron: <br>
+*  la referencia a Materialize
+*  la referencia a los iconos de materialize
+*  la referecia al style.css local
+*  la escala de referencia para la característica responsive de la página.
+<br>
+Dentro del body se colocan tres sectores: barra superior, cuerpo main y barra inferior.
+
+
+
 
 
 
@@ -209,8 +224,9 @@ Completá todos los endpoints del backend con los metodos disponibles, los heade
                 "id": 1, 
                 "name": "Lampara 1", 
                 "description": "Luz living", 
-                "state": 0, 
+                "state": false, 
                 "type": 1,
+                
             }
         ]
     },
@@ -243,7 +259,7 @@ Completá todos los endpoints del backend con los metodos disponibles, los heade
                         "type":"1",
                         "description":"this is an example device",
                         "id":"1"
-                      }
+                      }                      
                     ,
     "response_code": 200,
     "response_body": {     
@@ -251,7 +267,7 @@ Completá todos los endpoints del backend con los metodos disponibles, los heade
     },
 }
 ```
-4) Cambiar estado de dispositivo en base de datos
+) Cambiar estado de dispositivo en base de datos
 ```json
 {
     "method": "put",

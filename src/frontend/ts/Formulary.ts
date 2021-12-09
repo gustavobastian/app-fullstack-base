@@ -9,7 +9,7 @@
      * @returns string with form preloaded
      */
      function createForm(num:number,localMain:Main):string{        
-        console.log("creating form");
+        console.log("calling form");
   
         if(localMain.statusForm=="inForm"){
           localMain.localDevice.name="Name";
@@ -97,3 +97,16 @@
   
       }
   
+     /**
+     * function hideForm()
+     * Destroys the form used for add/editing the devices
+     * @returns 
+     */
+    function hideForm(localMain:Main):void{
+      //  console.log("Hiding form");
+        let containerForm=localMain.getElement("deviceForm");
+        
+        containerForm.innerHTML+= ``;
+        window.location.reload();
+        return;
+    }

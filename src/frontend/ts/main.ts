@@ -40,6 +40,17 @@ class Main implements EventListenerObject,PostResponseListener, PutResponseListe
            console.log(evInput.innerText);   
             
        
+           
+        if((evInput.innerText=="Help")&&this.statusForm=="waiting")
+           {
+              this.statusForm="inHelp";
+              callHelp(this);                   
+        }
+        if((evInput.innerText=="EXIT")&&this.statusForm=="inHelp")
+           {
+              this.statusForm="waiting";
+              hideHelp(this);                   
+        }   
         //if the event is called from the add button, we call the complete form function
          if((evInput.innerText=="add")&&this.statusForm=="waiting")
         {
@@ -51,7 +62,7 @@ class Main implements EventListenerObject,PostResponseListener, PutResponseListe
         else if((evInput.innerText=="CANCEL")&&((this.statusForm=="inForm")||(this.statusForm=="inEdit")))
         {
            this.statusForm="waiting";
-           this.hideForm();     
+           hideForm(this);     
         } 
         //if we complete the form and want to publish the new device on the database(if we are editing one.. we need to send id)        
         else if((evInput.innerText=="SEND")&&(this.statusForm=="inForm"))
@@ -213,19 +224,6 @@ class Main implements EventListenerObject,PostResponseListener, PutResponseListe
       
     }
     
-    /**
-     * function hideForm()
-     * Destroys the form used for add/editing the devices
-     * @returns 
-     */
-    public hideForm():void{
-      //  console.log("Hiding form");
-        let containerForm=this.getElement("deviceForm");
-        
-        containerForm.innerHTML+= ``;
-        window.location.reload();
-        return;
-    }
 
     /**
      * Handler of the response of the post method
@@ -346,5 +344,7 @@ window.onload = function(){
     let miObjeto = new Main("Gustavo");
     let boton_agregar=miObjeto.getElement("add_device");
     boton_agregar.addEventListener("click",miObjeto);
+    let boton_ayuda=miObjeto.getElement("Help_button");
+    boton_ayuda.addEventListener("click",miObjeto);
 
 }
