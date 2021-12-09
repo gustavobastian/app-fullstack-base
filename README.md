@@ -260,9 +260,9 @@ Dentro de este directorio se encuentran todos los archivos typescript que permit
 
 ### Backend
 
-Completá todos los detalles de funcionamiento sobre el backend, sus interacciones con el cliente web, la base de datos, etc.
+<!--Completá todos los detalles de funcionamiento sobre el backend, sus interacciones con el cliente web, la base de datos, etc.-->
 
-El backend fue desarrollado en NodeJs utilizando express JS. Posee cuatro endpoints que permiten al cliente interactuar con la base de dato.
+El backend fue desarrollado en NodeJs utilizando express JS. Posee cuatro endpoints que permiten al cliente interactuar con la base de datos.
 
 <details><summary><b>Ver los endpoints disponibles</b></summary><br>
 
