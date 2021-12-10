@@ -9,16 +9,18 @@ var connection = mysql.createConnection({
     password : 'userpass',
     database : 'smart_home'
 });
-
+let retry=0;
 //=======[ Main module code ]==================================================
 
+while(retry==0){
 connection.connect(function(err) {
     if (err) {
         console.error('Error while connect to DB: ' + err.stack);
         return;
     }
-    console.log('Connected to DB under thread ID: ' + connection.threadId);
+   else{ console.log('Connected to DB under thread ID: ' + connection.threadId);retry=1;}
 });
+}
 
 module.exports = connection;
 

@@ -45,7 +45,7 @@ services:
             -                    mysql-admin
         ports: 
             -                    "8000:3000"
-        command:                 bash -c "sleep 1 && sleep 10 &&  nodemon /home/node/app/src/index.js"
+        command:                 bash -c "sleep 1 && sleep 50 &&  nodemon /home/node/app/src/index.js"
 
 networks:
     app-fullstack-net:
