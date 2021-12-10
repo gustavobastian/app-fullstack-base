@@ -112,7 +112,7 @@ app.post('/devices/', function(req, res, next) {
         
     let received=req.body;
     //sentences for debug
-    /*console.log("name: "+received.name);
+  /*  console.log("name: "+received.name);
     console.log("type: "+received.type);
     console.log("description: "+received.description);*/
 
@@ -141,8 +141,6 @@ app.post('/devices/', function(req, res, next) {
     res.end();
 });
 
-
-
 //Put method for change device state
 /**
  * Function that update the state of a  device in the database. 
@@ -152,16 +150,14 @@ app.post('/devices/', function(req, res, next) {
 app.put('/devices/', function(req, res, next) {
     
     requestLocal=(JSON.parse(req.body));
-    console.log(requestLocal);
+    //console.log(requestLocal);
     let result=0;
     let sql = `UPDATE Devices SET state=${requestLocal.status} WHERE id=${requestLocal.id}`;
         
         //inserting device to database
     connection.query(sql, function(error,result){
             if (error) throw error;
-            console.log("device updated: " + result.affectedRows);
-        
-
+     //       console.log("device updated: " + result.affectedRows);        
     });
      
     //send response to frontend

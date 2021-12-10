@@ -10,6 +10,7 @@
      */
      function createForm(num:number,localMain:Main):string{        
         console.log("calling form");
+        let deviceTypeList= ["Ligth","Window","Ac/Fan","Tv","Audio System"];
   
         if(localMain.statusForm=="inForm"){
           localMain.localDevice.name="Name";
@@ -27,7 +28,7 @@
                         <!--<label>Choose type</label>-->
                         <form>
                         <select class="browser-default" id="Device_Type_browser">`
-
+          /*
            if(localMain.localDevice.type==0){             
                   content+=`<option value="0" selected>light </option>
                           <option value="1">window </option>
@@ -40,7 +41,17 @@
                                       content+=`<option value="0" >light </option>
                                               <option value="1" >window </option>
                                               <option value="2" selected>fan or air conditioner</option>`}               
+            */
+            for( let i=0;i<deviceTypeList.length;i++){
+              content+=`<option  value="`;
+              if(localMain.localDevice.type==i){
+                content+=`${i}" selected>${deviceTypeList[i]}</option>`;
+              }
+              else{
+                content+=`${i}" selected>${deviceTypeList[i]}</option>`;
+              }
 
+            }
 
              content+=         `</select>
                         </form>

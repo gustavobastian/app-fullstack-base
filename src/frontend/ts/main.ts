@@ -29,7 +29,6 @@ class Main implements EventListenerObject,PostResponseListener, PutResponseListe
      * @returns void
      */
     public handleEvent(ev:Event):void{
-
         
         const evInput =ev.target as HTMLElement; 
         let evName=evInput.id.split("_");
@@ -46,8 +45,7 @@ class Main implements EventListenerObject,PostResponseListener, PutResponseListe
 
         //for buttons
         if(ev.type == "click"){            
-           console.log(evInput.innerText);   
-            
+           console.log(evInput.innerText);              
        
            
         if((evInput.innerText=="Help")&&this.statusForm=="waiting")
@@ -58,8 +56,8 @@ class Main implements EventListenerObject,PostResponseListener, PutResponseListe
         if((evInput.innerText=="EXIT")&&this.statusForm=="inHelp")
            {
               this.statusForm="waiting";
-              hideHelp(this);                   
-        }   
+              hideHelp(this);
+            }   
         //if the event is called from the add button, we call the complete form function
          if((evInput.innerText=="add")&&this.statusForm=="waiting")
         {
@@ -335,7 +333,7 @@ class Main implements EventListenerObject,PostResponseListener, PutResponseListe
            for(let disp of respuestaObjetos)
             { 
                 //check boxes
-                if(disp.type>=0 && disp.type<2){
+                if(disp.type!==2){
                     let checkbox = <HTMLInputElement>this.getElement("ck_"+disp.id);                    
                     checkbox.addEventListener("click",this);
                     if(disp.state==1){checkbox.value="on";}
