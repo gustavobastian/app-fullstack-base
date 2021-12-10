@@ -87,7 +87,7 @@ typings/
 # DynamoDB Local files
 .dynamodb/
 
-db/data/
+
 src/frontend/js
 
 
