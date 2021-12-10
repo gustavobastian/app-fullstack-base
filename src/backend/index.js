@@ -151,13 +151,13 @@ app.post('/devices/', function(req, res, next) {
  */
 app.put('/devices/', function(req, res, next) {
     
-    requestLocal=JSON.parse(req.body[0]);
-    
+    requestLocal=(JSON.parse(req.body));
+    console.log(requestLocal);
     let result=0;
     let sql = `UPDATE Devices SET state=${requestLocal.status} WHERE id=${requestLocal.id}`;
         
         //inserting device to database
-     connection.query(sql, function(error,result){
+    connection.query(sql, function(error,result){
             if (error) throw error;
             console.log("device updated: " + result.affectedRows);
         

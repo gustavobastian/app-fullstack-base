@@ -88,7 +88,7 @@ class Framework{
      * @param listener method who handles the response from the server
      * @param data id of the device to change state, and information of the state
      */
-    public requestPUT(url:string, listener:PostResponseListener,data:string){
+    public requestPUT(url:string, listener:PutResponseListener,data:string){
     ///AJAX api rest PUT for state changes
     console.log("sending state changes")
     let xml = new XMLHttpRequest();
@@ -99,7 +99,7 @@ class Framework{
         
         if(xml.readyState == 4)//status 4 all transaction performed
         {
-            listener.handlerPostResponse(xml.status, xml.response);      
+            listener.handlerPutResponse(xml.status, xml.response);      
         }                        
     }
     xml.open("PUT", url,true);//true --->asincrona

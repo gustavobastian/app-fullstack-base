@@ -34,7 +34,16 @@ class Main implements EventListenerObject,PostResponseListener, PutResponseListe
         const evInput =ev.target as HTMLElement; 
         let evName=evInput.id.split("_");
         
-        
+        //sliders
+        if(ev.type == "input"){            
+          if((evName[0]="ck")&&(this.statusForm=="waiting"))
+            {
+              this.deviceStateChange(parseInt(evName[1]));
+              return;
+            }  
+         
+        }
+
         //for buttons
         if(ev.type == "click"){            
            console.log(evInput.innerText);   
@@ -110,11 +119,22 @@ class Main implements EventListenerObject,PostResponseListener, PutResponseListe
     public deviceStateChange(id:number):void {
       
       let device=<HTMLInputElement>this.getElement("ck_"+id);
-      console.log(device.checked);
-      let information = {
+      let information={};
+      this.getDevice(id);
+      
+      if(this.localDevice.type!=2){
+        information = {
                         "id":id,
-                        "status":device.checked
-                      }
+                        "status":device.checked,
+                      };      
+                    }
+      else{
+        information = {
+          "id":id,
+          "status":device.value,
+        }; 
+      }              
+
       
       console.log(information);
       let data=JSON.stringify(information);
@@ -315,12 +335,20 @@ class Main implements EventListenerObject,PostResponseListener, PutResponseListe
            for(let disp of respuestaObjetos)
             { 
                 //check boxes
-                if(disp.type>=0 && disp.type<3){
+                if(disp.type>=0 && disp.type<2){
                     let checkbox = <HTMLInputElement>this.getElement("ck_"+disp.id);                    
                     checkbox.addEventListener("click",this);
                     if(disp.state==1){checkbox.value="on";}
                     
                 } 
+                else{
+                  let checkbox = <HTMLFormElement>this.getElement("ck_"+disp.id);                  
+                  checkbox.value=disp.state;
+                  checkbox.addEventListener("onchange",this);
+                  checkbox.addEventListener("input",this);
+                       }
+
+                
 
                 //edit and delete buttons
                 let edit_button=this.getElement("edit_"+disp.id);

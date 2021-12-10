@@ -44,7 +44,7 @@ function displayDevice(disp:Device):string{
         content+= `<i class=" material-icons" id="Type_${disp.id}">ac_unit</i>
                                             <br>`;}                
     else {content+=`<br>`;}                                       
-
+    if(disp.type!=2){    
     content+=`         <span class="card-title" id="Name_${disp.id}"> ${disp.name} </span> 
                        <p id="Desc_${disp.id}">${disp.description}</p>                           
                        <div class="switch">
@@ -67,17 +67,17 @@ function displayDevice(disp:Device):string{
                         </label>
                        </div>                           
                    </div>
-                   `;
-    /*   this code add a slider for fan speed or temperature selection...(needs works)
-    if(disp.type==2){
-        content +=`      <form action="#">
+                   `;}
+
+    else            {
+        content +=`      <span class="card-title" id="Name_${disp.id}"> ${disp.name} </span> 
+                         <p id="Desc_${disp.id}">${disp.description}</p>                           
+                         <form action="#">
                          <label class="white-text">Speed/Level</label>
                          <p class="range-field">
-                           <input type="range" id="Speed_${disp.id}" min="0" max="100" oninput="showVal(this.value)" onchange="showVal(this.value)" value=0 />
-                         </p>`}
-    else{
-        content+=`<br><br><br><br>`;
-    };      */               
+                           <input type="range" id="ck_${disp.id}" min="0" max="100" value=0 />
+                         </p>`;};
+                   
 
                               
     
