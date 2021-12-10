@@ -3,7 +3,7 @@
 
 set -e
   
-
+echo "waiting db"
 shift
 mysql_user=root
 mysql_pass=userpass
