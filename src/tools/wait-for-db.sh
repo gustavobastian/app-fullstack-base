@@ -1,6 +1,6 @@
 #!/bin/sh
 # wait-for-db.sh
-
+# not used
 set -e
   
 echo "waiting db"

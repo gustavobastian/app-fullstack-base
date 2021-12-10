@@ -3,19 +3,6 @@
 var mysql = require('mysql');
 
 
-/*
-var pool  = mysql.createPool({
-    connectionLimit : 10,
-    //host     : 'localhost',
-    //user     : 'root',
-    //password : '',
-    //database : 'mydb',
-    host     : 'mysql-server',
-    port     : '3306',
-    user     : 'root',
-    password : 'userpass',
-    database : 'smart_home'
-  });*/
   async function init() {
     console.log(1);
     await sleep(1000);
