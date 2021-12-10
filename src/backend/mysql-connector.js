@@ -16,7 +16,7 @@ while(retry==0){
 connection.connect(function(err) {
     if (err) {
         console.error('Error while connect to DB: ' + err.stack);
-        return;
+        connection.end();        
     }
    else{ console.log('Connected to DB under thread ID: ' + connection.threadId);retry=1;}
 });
