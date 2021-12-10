@@ -11,7 +11,7 @@ class Device{
     public name: string;
     public description:string;
     public state : number;
-    public type : number;    
+    public type : number;        
 }
 /**
  *Function displayDevice
@@ -22,6 +22,10 @@ class Device{
 function displayDevice(disp:Device):string{
 
     let content=  `<div class="col s12 m5 l3" >   `;
+
+    let deviceTypeList= ["lightbulb_outline","dehaze","ac_unit","computer","audiotrack"];
+    
+
     
     //container.innerHTML+= `<li class="collection-item avatar">`
     content+= `<div class="card blue darken-1" id="card+${disp.id}">
@@ -29,20 +33,11 @@ function displayDevice(disp:Device):string{
                            `
 
     //according to device type, different cards are assigned                                  
-    // type 0 => light, with switch for turn on/off the light
-    if(disp.type==0){
-       content+= `<i class=" material-icons" id="Type_${disp.id}">lightbulb_outline</i>
+    
+    if(disp.type<deviceTypeList.length){
+       content+= `<i class=" material-icons" id="Type_${disp.id}">${deviceTypeList[disp.type]}</i>
                        <br>
                   `;}
-    //type 1 => window, with switch for opening/close the window                    
-    else if(disp.type==1){
-        content+= `<i class=" material-icons" id="Type_${disp.id}">dehaze</i>
-                    <br>`;}
-    //type 2 => Air Conditioner or fan , with switch for opening/close the window and level for increase
-    //decrease temperature or speed     
-    else if(disp.type==2){
-        content+= `<i class=" material-icons" id="Type_${disp.id}">ac_unit</i>
-                                            <br>`;}                
     else {content+=`<br>`;}                                       
     if(disp.type!=2){    
     content+=`         <span class="card-title" id="Name_${disp.id}"> ${disp.name} </span> 
