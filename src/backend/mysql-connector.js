@@ -17,7 +17,7 @@ while(retry==0){
 connection.connect(function(err) {
     if (err) {
         console.error('Error while connect to DB: ' + err.stack);
-        await new Promise(resolve => setTimeout(resolve, 10000));
+        
         connection.destroy();
     }
    else{ 
