@@ -146,23 +146,23 @@ En la siguiente ilustración podés ver cómo está organizado el proyecto para 
 ├── LICENSE.md                  # licencia del proyecto
 ```
 
-> No olvides ir poniendo tus cambios en el archivo `CHANGELOG.md` a medida que avanzas en el proyecto.
+<!-->> No olvides ir poniendo tus cambios en el archivo `CHANGELOG.md` a medida que avanzas en el proyecto.-->
 
 </details>
 
 ## Detalles de implementación 💻
 
-En esta sección podés ver los detalles específicos de funcionamiento del código y que son los siguientes.
+<!--En esta sección podés ver los detalles específicos de funcionamiento del código y que son los siguientes.-->
 
 <details><summary><b>Mira los detalles de implementación</b></summary><br>
 
 ### Agregar un dispositivo
 
 
-Presionando el botón "+" se despliega el formulario para incorporar un nuevo dispositivo.
+Presionando el botón "+" se despliega el formulario para incorporar un nuevo dispositivo.<br>
 ![Agregar disp](doc/adding-device.png)
 
-Se utiliza el selector para elegir el tipo de dispositivo.
+Se utiliza el selector para elegir el tipo de dispositivo.<br>
 
 ![Seleccionar tipo](doc/selecting-Type.png)
 Una vez completados todos los datos se presiona "Send" y se graban los cambios en la base de datos..
@@ -175,10 +175,10 @@ Una vez modificado se presiona "Send" y se graban los cambios en la base de dato
 Si se quiere cancelar se presiona "Cancel".
 
 ### Eliminar un dispositivo
-Se presiona el botón "Delete" dentro del box del dispositivo. Aparece un mensaje de confirmación de eliminación y en caso de presionar "OK" se elimina el mismo de la base de datos y se refresca la pagina.
+Se presiona el botón "Delete" dentro del box del dispositivo. Aparece un mensaje de confirmación de eliminación y en caso de presionar "OK" se elimina el mismo de la base de datos y se refresca la pagina.<br>
 ![Eliminar](doc/delete-confirmation.png)
 ### Ver pantalla de ayuda
-Se presiona el botón "Help" dentro de la barra superior. Al presionar el botón "Exit" se retorna a la página web.
+Se presiona el botón "Help" dentro de la barra superior. Al presionar el botón "Exit" se retorna a la página web.<br>
 ![Eliminar](doc/help.png)
 
 
@@ -205,11 +205,11 @@ Al finalizar el cuerpo main se colocan los enlaces a los script JS que se utiliz
 
 <strong>Directorio "/frontend/ts":</strong><br>
 Dentro de este directorio se encuentran todos los archivos typescript que permiten el funcionamiento dinámico de la página. Se describen a continuación:<br>
-* devices.ts: archivo que contiene la clase device con todos los parámetros que poseen los dispositivos cargados en la base de datos y la funcion displayDevice, que devuelve un string con contenido html que genera para una de las tarjetas de los dispositivos y cuyo parametro de entrada es una instancia de la clase Device. Esta función selecciona el logo del dispositivo según el tipo e incorpora los botones de "Edit" y "Delete".
-* Formulary.ts: archivo que posee las 3 funciones que permiten la conformación, la generación y la destruccion del formulario para ingresar un nuevo dispositivo o editar uno ya creado.<br>
-  <u>Función createForm</u>: funcion que devuelve un string con código HTMl para la conformación del formulario. El mismo posee un seleccionador para el tipo de dispositivo , 2 entradas de texto(para el nombre y la descripcion) y dos botones ("Send" y "Cancel"). El parámetro que se pasa es una instancia de la clase Device de la cual se obtienen los datos precargados.<br>
-  <u>Función callForm</u>: funcion que recibe como parametro una instancia de la clase main(que contiene la ventana principal). Esta funcion busca del DOM el objeto con id="deviceForm"(que se crea en index.html) y le asigna el valor devuelto por createForm(funcion que se llama con parametro la instancia del objeto device que contiene la clase main). Luego de esto, asigna a los botones el listener de eventos.<br>
-  <u>Función hideForm</u>: funcion que recibe como parametro una instancia de la clase main, busca del dom el objeto con id="deviceForm" y lo vacía. Luego de esto, refresca la pagina.
+* devices.ts: archivo que contiene la clase device con todos los parámetros que poseen los dispositivos cargados en la base de datos y la funcion displayDevice, que devuelve un string con contenido html que genera para una de las tarjetas de los dispositivos y cuyo parámetro de entrada es una instancia de la clase Device. Esta función selecciona el logo del dispositivo según el tipo e incorpora los botones de "Edit" y "Delete".
+* Formulary.ts: archivo que posee las 3 funciones que permiten la conformación, la generación y la destrucción del formulario para ingresar un nuevo dispositivo o editar uno ya creado.<br>
+  <u>Función createForm</u>: función que devuelve un string con código HTMl para la conformación del formulario. El mismo posee un seleccionador para el tipo de dispositivo , 2 entradas de texto(para el nombre y la descripcion) y dos botones ("Send" y "Cancel"). El parámetro que se pasa es una instancia de la clase Device de la cual se obtienen los datos precargados.<br>
+  <u>Función callForm</u>: función que recibe como parámetro una instancia de la clase main(que contiene la ventana principal). Esta función busca del DOM el objeto con id="deviceForm"(que se crea en index.html) y le asigna el valor devuelto por createForm (función que se llama con parámetro la instancia del objeto device que contiene la clase main). Luego de esto, asigna a los botones el listener de eventos.<br>
+  <u>Función hideForm</u>: función que recibe como parámetro una instancia de la clase main, busca del dom el objeto con id="deviceForm" y lo vacía. Luego de esto, refresca la pagina.
   
 * Help.ts : funciones similares a las que generan el formulario, y utiliza el mismo container de la página, solo que no se edita su interior y posee un solo botón de salida.<br>
  <u>Función createHelp</u>: genera el texto de ayuda,<br>
@@ -217,38 +217,38 @@ Dentro de este directorio se encuentran todos los archivos typescript que permit
  <u>Función hideHelp</u>: destruye el help.<br>
 
 * framework.ts : archivo de define una clase que contiene las funciones Asincrónicas que se utilizan para comunicarse con el servidor.<br>
-<u>public requestGET</u>: con parametros URL del servidor y  clase listener que analizará las respuestas, solicita al servidor la lista de todos los dispositivos de la base de datos. La clase listerner que se pasa como referencia debe poseer implementada la interfase descripta en "GetResponseListener".<br>
-<u>public requestDEL</u>: con parametros URL del servidor, clase listener que analizará las respuestas y un string data con el id del dispositivo a borrar. Esta función solicita al servidor que elimine un dispositivo específico de la base de datos. La clase listerner que se pasa como referencia debe poseer implementada la interfase descripta en "DeleteResponseListener".<br>
-<u>public requestPOST</u>: con parametros URL del servidor, clase listener que analizará las respuestas y un string formato JSON con la estructura de un dispositivo, solicita al servidor que ingrese a la base de datos el dispositivo. En caso de ya existir un dispositivo con esa id, se actualizan sus datos. La clase listerner que se pasa como referencia debe poseer implementada la interfase descripta en "POSTResponseListener".<br>
-<u>public requestPUT</u>: con parametros URL del servidor, clase listener que analizará las respuestas y string con identificación del dispositivo, solicita al servidor que actualice en la base de datos el estado del dispositivo. La clase listerner que se pasa como referencia debe poseer implementada la interfase descripta en "PUTResponseListener".<br>
+<u>public requestGET</u>: con parámetros URL del servidor y  clase listener que analizará las respuestas, solicita al servidor la lista de todos los dispositivos de la base de datos. La clase listerner que se pasa como referencia debe poseer implementada la interfase descripta en "GetResponseListener".<br>
+<u>public requestDEL</u>: con parámetros URL del servidor, clase listener que analizará las respuestas y un string data con el id del dispositivo a borrar. Esta función solicita al servidor que elimine un dispositivo específico de la base de datos. La clase listerner que se pasa como referencia debe poseer implementada la interfase descripta en "DeleteResponseListener".<br>
+<u>public requestPOST</u>: con parámetros URL del servidor, clase listener que analizará las respuestas y un string formato JSON con la estructura de un dispositivo, solicita al servidor que ingrese a la base de datos el dispositivo. En caso de ya existir un dispositivo con esa id, se actualizan sus datos. La clase listerner que se pasa como referencia debe poseer implementada la interfase descripta en "POSTResponseListener".<br>
+<u>public requestPUT</u>: con parámetros URL del servidor, clase listener que analizará las respuestas y string con identificación del dispositivo, solicita al servidor que actualice en la base de datos el estado del dispositivo. La clase listerner que se pasa como referencia debe poseer implementada la interfase descripta en "PUTResponseListener".<br>
 
 * main.ts : archivo de define una clase la clase principal de la página.<br>
   La clase main contiene los siguientes elementos:<br>
   nombre: string que posee el nombre la clase.
   statusForm: string que permite filtrar los eventos de los botones. Posee 4 posibilidades: "waiting","inForm","inEdit" y "inHelp".<br>
-  deviceNumber: numero de dispositivo, se utiliza para guardar la información del dispositivo actual.<br>
+  deviceNumber: número de dispositivo, se utiliza para guardar la información del dispositivo actual.<br>
   localDevice: instancia de Device que guarda los datos del dispositivo que se quiere editar. <br>
   framework: instancia de la clase que contiene las funciones para comunicarse con el servidor. <br>
 
   El constructor de la clase main consulta mediante la función requestGet la lista de dispositivos que contiene la base de datos. Al  cargarse la página se llama a este constructor.<br>
 
-  Función handleEvent: recibe como parametro un evento. Filtra que solo sea un evento del tipo "click".<br>
+  Función handleEvent: recibe como parámetro un evento. Filtra que solo sea un evento del tipo "click".<br>
   Luego de ello, dependiendo del texto que posea el botón y del statusForm en que se encuentre la clase Main, se llaman a distintas funciones. <br>
 
-  Función deviceStateChangue: se llama cuando se activa o se desactiva un switch en un dispositivo. Se obtiene el dispositivo desde el DOM y se llama a la funcion requestPUT pasando como parametro el dispositivo en formato JSON con el estado actualizado.<br>
+  Función deviceStateChangue: se llama cuando se activa o se desactiva un switch en un dispositivo o bien se cambia el valor con el slider. Se obtiene el dispositivo desde el DOM y se llama a la función requestPUT pasando como parámetro el dispositivo en formato JSON con el estado actualizado.<br>
 
-  Función deleteDevice: se llama cuando se presiona el botón "Delete" y se confirma con "ok". Recibe como parametro el id del dispositivo a eliminar y llama a la funcion requestDel con dicho id como parametro.<br>
+  Función deleteDevice: se llama cuando se presiona el botón "Delete" y se confirma con "ok". Recibe como parámetro el id del dispositivo a eliminar y llama a la función requestDel con dicho id como parámetro.<br>
 
 
-  Función editDevice: se llama cuando se presiona el botón "Edit" y el statusForm es "waiting". Recibe como parametro el id del dispositivo a editar dentro de un string. Obtiene la informacion fragmentando el string.  Llama a la funcion getDevice con dicho id como parametro, cargando en el componente localDevice los parametros a editar. Luego de esto, pasa el statusForm a "inEdit" y retorna<br>
+  Función editDevice: se llama cuando se presiona el botón "Edit" y el statusForm es "waiting". Recibe como parámetro el id del dispositivo a editar dentro de un string. Obtiene la información fragmentando el string.  Llama a la función getDevice con dicho id como parámetro, cargando en el componente localDevice los parámetros a editar. Luego de esto, pasa el statusForm a "inEdit" y retorna<br>
 
-  Función sendDevice: se llama cuando se presiona el botón "Send" y el statusForm es "inEdit" o "inForm". Recibe como parametro el id del dispositivo a enviar. Obtiene la informacion buscando los objetos del formulario desde el DOM. Genera el JSON con la información del dispositivo y llama a la funcion requestPost con dicho id como parametro. Luego de ello retorna.<br>  
+  Función sendDevice: se llama cuando se presiona el botón "Send" y el statusForm es "inEdit" o "inForm". Recibe como parámetro el id del dispositivo a enviar. Obtiene la información buscando los objetos del formulario desde el DOM. Genera el JSON con la información del dispositivo y llama a la función requestPost con dicho id como parámetro. Luego de ello retorna.<br>  
 
-  Función getElement: tiene como parametro un string con la id del elemento y retorna el objeto HTMLelement del DOM.<br>  
+  Función getElement: tiene como parámetro un string con la id del elemento y retorna el objeto HTMLelement del DOM.<br>  
 
-  Función getDevice: tiene como parametro la id del elemento y utilizando la funcion getElement, carga en el componente localDevice de la clase Main todos los parámetros del dispositivo.<br>  
+  Función getDevice: tiene como parámetro la id del elemento y utilizando la función getElement, carga en el componente localDevice de la clase Main todos los parámetros del dispositivo.<br>  
 
-  La clase Main implementa todas las respuestas a las funciones de la clase framework. En el caso de GetResponseListener, genera toda la lista de dispositivos. Mientras que en las funciones PostResponseListener, DeleteResponseListener y PutResponseListener, en caso de haber algun error, genera un mensaje de alerta en la ventana. Si no hubo error, solo imprime en la consola el mensaje del servidor.  
+  La clase Main implementa todas las respuestas a las funciones de la clase framework. En el caso de GetResponseListener, genera toda la lista de dispositivos. Mientras que en las funciones PostResponseListener, DeleteResponseListener y PutResponseListener, en caso de haber algun error, se genera un mensaje de alerta en la ventana. Si no hubo error, solo imprime en la consola el mensaje del servidor.  
 
 
 
