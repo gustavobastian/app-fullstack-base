@@ -44,7 +44,7 @@ services:
             -                    mysql-admin
         ports: 
             -                    "8000:3000"
-        command:                 nodemon /home/node/app/src/index.js
+        command:                 ["./tools/wait-for-db.sh",nodemon /home/node/app/src/index.js]
 
 networks:
     app-fullstack-net:
