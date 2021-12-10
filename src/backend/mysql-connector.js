@@ -2,29 +2,54 @@
 
 var mysql = require('mysql');
 
-var connection = mysql.createConnection({
+
+/*
+var pool  = mysql.createPool({
+    connectionLimit : 10,
+    //host     : 'localhost',
+    //user     : 'root',
+    //password : '',
+    //database : 'mydb',
+    host     : 'mysql-server',
+    port     : '3306',
+    user     : 'root',
+    password : 'userpass',
+    database : 'smart_home'
+  });*/
+  async function init() {
+    console.log(1);
+    await sleep(1000);
+    console.log(2);
+  }
+  function sleep(ms) {
+    return new Promise((resolve) => {
+      setTimeout(resolve, ms);
+    });
+  }
+
+  sleep(15000);
+
+  var connection = mysql.createConnection({
     host     : 'mysql-server',
     port     : '3306',
     user     : 'root',
     password : 'userpass',
     database : 'smart_home'
 });
-let retry=0;
+
 //=======[ Main module code ]==================================================
 
-while(retry==0){
-    
+
+
 connection.connect(function(err) {
     if (err) {
-        console.error('Error while connect to DB: ' + err.stack);
+        console.error('Error while connect to DB: ' + err.stack);        
         
-        connection.destroy();
     }
    else{ 
        console.log('Connected to DB under thread ID: ' + connection.threadId);retry=1;
     }
 });
-}
 
 module.exports = connection;
 
