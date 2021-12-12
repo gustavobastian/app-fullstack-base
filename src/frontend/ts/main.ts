@@ -75,15 +75,16 @@ class Main implements EventListenerObject,PostResponseListener, PutResponseListe
         else if((evInput.innerText=="SEND")&&(this.statusForm=="inForm"))
         {
            this.statusForm="waiting";
-           this.sendDevice(0);           
-           this.addDeviceToList(this.localDevice);  
+           this.sendDevice(0);                      
            hideForm(this);  
+           this.framework.requestGET("http://localhost:8000/devices",this);                  
         } 
         else if((evInput.innerText=="SEND")&&this.statusForm=="inEdit")
         {
            this.statusForm="waiting";
            this.sendDevice(this.deviceNumber);   
            hideForm(this);  
+           this.framework.requestGET("http://localhost:8000/devices",this);                  
                               
         }        
         //delete device
@@ -93,6 +94,7 @@ class Main implements EventListenerObject,PostResponseListener, PutResponseListe
           if (confirm('Are you sure you want to delete this device?')) {           
             this.deleteDevice(evInput.id);           
           }           
+          this.framework.requestGET("http://localhost:8000/devices",this);                  
         }
         //edit device
         else if((evInput.innerText=="Edit")&&this.statusForm=="waiting")
@@ -247,6 +249,8 @@ class Main implements EventListenerObject,PostResponseListener, PutResponseListe
       
     }
     
+
+
     public addDeviceToList(disp:Device):void{
       let container=this.getElement("lista");
       let content=displayDevice(disp);  
@@ -260,18 +264,14 @@ class Main implements EventListenerObject,PostResponseListener, PutResponseListe
            if(disp.type!==2){
                let checkbox = <HTMLInputElement>this.getElement("ck_"+disp.id);                    
                checkbox.addEventListener("click",this);
-               if(disp.state==1){checkbox.value="on";}
-               
+               if(disp.state==1){checkbox.value="on";}               
            } 
            else{
              let checkbox = <HTMLFormElement>this.getElement("ck_"+disp.id);                  
              checkbox.value=disp.state;
              checkbox.addEventListener("onchange",this);
              checkbox.addEventListener("input",this);
-                  }
-
-           
-
+               }
            //edit and delete buttons
            let edit_button=this.getElement("edit_"+disp.id);
            edit_button.addEventListener("click",this);
@@ -334,11 +334,11 @@ class Main implements EventListenerObject,PostResponseListener, PutResponseListe
       if(response=="Item deleted")
         {
          //console.log("deleted");
-         window.location.reload(); //page refresh
+     //    window.location.reload(); //page refresh
         return;}
       else{
         window.alert("Error deleting device");
-        window.location.reload(); //page refresh
+     //   window.location.reload(); //page refresh
         return;
 
       }  
@@ -357,6 +357,8 @@ class Main implements EventListenerObject,PostResponseListener, PutResponseListe
         //response for a list
         let respuestaObjetos:Array<Device> = JSON.parse(response);        
         let container=this.getElement("lista");
+        //erasing container
+        container.innerHTML='';
         //drawing devices on screen
          for(let disp of respuestaObjetos)
          {  
