@@ -76,11 +76,15 @@ class Main implements EventListenerObject,PostResponseListener, PutResponseListe
         {
            this.statusForm="waiting";
            this.sendDevice(0);           
+           this.addDeviceToList(this.localDevice);  
+           hideForm(this);  
         } 
         else if((evInput.innerText=="SEND")&&this.statusForm=="inEdit")
         {
            this.statusForm="waiting";
-           this.sendDevice(this.deviceNumber);           
+           this.sendDevice(this.deviceNumber);   
+           hideForm(this);  
+                              
         }        
         //delete device
         else if((evInput.innerText=="Delete"))
@@ -196,7 +200,8 @@ class Main implements EventListenerObject,PostResponseListener, PutResponseListe
       
       //console.log(data2);
 
-      this.framework.requestPOST("http://localhost:8000/devices/",this,data);                   
+      this.framework.requestPOST("http://localhost:8000/devices/",this,data);      
+      
       return;
     }
     
@@ -242,6 +247,38 @@ class Main implements EventListenerObject,PostResponseListener, PutResponseListe
       
     }
     
+    public addDeviceToList(disp:Device):void{
+      let container=this.getElement("lista");
+      let content=displayDevice(disp);  
+      //console.log(log);
+      container.innerHTML+=    content;   
+      container.innerHTML+= `  </div>`;
+           
+      //adding listener for objects  
+      
+           //check boxes
+           if(disp.type!==2){
+               let checkbox = <HTMLInputElement>this.getElement("ck_"+disp.id);                    
+               checkbox.addEventListener("click",this);
+               if(disp.state==1){checkbox.value="on";}
+               
+           } 
+           else{
+             let checkbox = <HTMLFormElement>this.getElement("ck_"+disp.id);                  
+             checkbox.value=disp.state;
+             checkbox.addEventListener("onchange",this);
+             checkbox.addEventListener("input",this);
+                  }
+
+           
+
+           //edit and delete buttons
+           let edit_button=this.getElement("edit_"+disp.id);
+           edit_button.addEventListener("click",this);
+           let delete_button=this.getElement("delete_"+disp.id);
+           delete_button.addEventListener("click",this);
+      
+    }
 
     /**
      * Handler of the response of the post method
@@ -255,11 +292,11 @@ class Main implements EventListenerObject,PostResponseListener, PutResponseListe
         //response object Item Add:  print to console
         if(response=="Item add")
         {console.log("Item added");
-         window.location.reload(); //page refresh          
+         //window.location.reload(); //page refresh          
         return;}                
         else{
           window.alert("Error adding device");
-          window.location.reload(); //page refresh
+          //window.location.reload(); //page refresh
           return;  
         }        
 
@@ -280,7 +317,7 @@ class Main implements EventListenerObject,PostResponseListener, PutResponseListe
          return;}
       else{
           window.alert("Error updating device status");
-          window.location.reload(); //page refresh
+       //   window.location.reload(); //page refresh
           return;  
         }        
     } 
@@ -297,11 +334,11 @@ class Main implements EventListenerObject,PostResponseListener, PutResponseListe
       if(response=="Item deleted")
         {
          //console.log("deleted");
-         window.location.reload(); //page refresh
+        // window.location.reload(); //page refresh
         return;}
       else{
         window.alert("Error deleting device");
-        window.location.reload(); //page refresh
+        //window.location.reload(); //page refresh
         return;
 
       }  

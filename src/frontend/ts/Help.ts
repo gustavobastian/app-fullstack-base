@@ -47,8 +47,8 @@ function createHelp(localMain:Main):string{
     //  console.log("Hiding form");
       let containerForm=localMain.getElement("deviceForm");
       
-      containerForm.innerHTML+= ``;
+      containerForm.innerHTML= ``;
       
-      window.location.reload();
+     // window.location.reload();
       return;
   }

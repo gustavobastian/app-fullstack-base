@@ -117,7 +117,7 @@
       //  console.log("Hiding form");
         let containerForm=localMain.getElement("deviceForm");
         
-        containerForm.innerHTML+= ``;
-        window.location.reload();
+        containerForm.innerHTML= ``;
+       // window.location.reload();
         return;
     }

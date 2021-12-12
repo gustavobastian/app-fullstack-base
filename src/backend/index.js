@@ -17,6 +17,9 @@ const { request } = require('express');
 
 
 //=======[ Main module code ]==================================================
+
+
+
 /**
  * Function that sends to the client the list of all the devices in the database in response to a GET request.
  *  
@@ -25,7 +28,7 @@ const { request } = require('express');
  */
 app.get('/devices/', function(req, res, next) {
     
-    
+//    console.log("calling get");
    
    //response with Device hardcode here
    /* devices = [
@@ -150,7 +153,7 @@ app.post('/devices/', function(req, res, next) {
 app.put('/devices/', function(req, res, next) {
     
     requestLocal=(JSON.parse(req.body));
-    //console.log(requestLocal);
+    
     let result=0;
     let sql = `UPDATE Devices SET state=${requestLocal.status} WHERE id=${requestLocal.id}`;
         
