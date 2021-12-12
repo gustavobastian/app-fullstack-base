@@ -334,11 +334,11 @@ class Main implements EventListenerObject,PostResponseListener, PutResponseListe
       if(response=="Item deleted")
         {
          //console.log("deleted");
-        // window.location.reload(); //page refresh
+         window.location.reload(); //page refresh
         return;}
       else{
         window.alert("Error deleting device");
-        //window.location.reload(); //page refresh
+        window.location.reload(); //page refresh
         return;
 
       }  
